@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ################################################################################
-## {Description}: Preview an Image from Raspberry Pi Camera (raspicam)
+## {Description}: Code (Bar/QR) Recognition using Raspberry Pi Camera (raspicam)
 ################################################################################
 ## Author: Khairul Izwan Bin Kamsani
 ## Version: {1}.{0}.{0}
@@ -18,21 +18,26 @@ import imutils
 
 from std_msgs.msg import String
 from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import CameraInfo
 
 from cv_bridge import CvBridge
 from cv_bridge import CvBridgeError
 
 import numpy as np
 
-class RaspicamPreview_node:
+from pyzbar import pyzbar
+import datetime
+import time
+
+class BarcodeRecognition_node:
 	def __init__(self):
 		# Initializing your ROS Node
-		rospy.init_node('RaspicamPreview_node', anonymous=True)
+		rospy.init_node('BarcodeRecognition_node', anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
 		# Give the OpenCV display window a name
-		self.cv_window_name = "Camera Preview"
+		self.cv_window_name = "Barcode Recognition"
 
 		# Create the cv_bridge object
 		self.bridge = CvBridge()
@@ -50,6 +55,9 @@ class RaspicamPreview_node:
 
 		# Overlay some text onto the image display
 		self.textInfo()
+
+		# Detecting Code (Bar/QR)
+		self.barcodeScan()
 
 		# Refresh the image on the screen
 		self.displayImg()
@@ -79,6 +87,33 @@ class RaspicamPreview_node:
 		except CvBridgeError as e:
 			print(e)
 
+	def barcodeScan(self):
+		# find the barcodes in the frame and decode each of the barcodes
+		self.barcodes = pyzbar.decode(self.cv_image)
+
+		# loop over the detected barcodes
+		for self.barcode in self.barcodes:
+			# extract the bounding box location of the barcode and 
+			# draw the bounding box surrounding the barcode on the 
+			# image
+			(self.x, self.y, self.w, self.h) = self.barcode.rect
+			cv2.rectangle(self.cv_image, (self.x, self.y), 
+				(self.x + self.w, self.y + self.h), 
+				(0, 0, 255), 2)
+
+			# the barcode data is a bytes object so if we want to 
+			# draw it on our output image we need to convert it to 
+			# a string first
+			self.barcodeData = self.barcode.data.decode("utf-8")
+			self.barcodeType = self.barcode.type
+
+			# draw the barcode data and barcode type on the image
+			cv2.putText(self.cv_image, "{} ({})".format(
+				self.barcodeData, self.barcodeType), (self.x, 
+				self.y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, 
+				(0, 0, 255), 2)
+
+	# Overlay some text onto the image display
 	# Overlay some text onto the image display
 	def textInfo(self):
 		cv2.putText(self.cv_image, "Sample", (10, self.image_height-10), 
@@ -97,21 +132,21 @@ class RaspicamPreview_node:
 	# Shutdown
 	def shutdown(self):
 		try:
-			rospy.loginfo("[INFO] Raspicam_Preview_node [OFFLINE]...")
+			rospy.loginfo("BarcodeRecognition_node [OFFLINE]...")
 
 		finally:
 			cv2.destroyAllWindows()
 
 def main(args):
-	vn = RaspicamPreview_node()
+	vn = BarcodeRecognition_node()
 
 	try:
 		rospy.spin()
 	except KeyboardInterrupt:
-		rospy.loginfo("[INFO] Raspicam_Preview_node [OFFLINE]...")
+		rospy.loginfo("BarcodeRecognition_node [OFFLINE]...")
 
 	cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-	rospy.loginfo("[INFO] Raspicam_Preview_node [ONLINE]...")
+	rospy.loginfo("BarcodeRecognition_node [ONLINE]...")
 	main(sys.argv)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ################################################################################
-## {Description}: Bar-Code/QR-Code Recognition
+## {Description}: Code (Bar/QR) Recognition using USB type camera
 ################################################################################
 ## Author: Khairul Izwan Bin Kamsani
 ## Version: {1}.{0}.{0}
