@@ -50,6 +50,14 @@ class BarcodeRecognition_node:
 		self.imgInfo_sub = rospy.Subscriber("/cv_camera/camera_info", 
 				CameraInfo, self.getCameraInfo)
 
+		# Subscribe to the scan_status topic
+		self.imgInfo_sub = rospy.Subscriber("/scan_status", 
+				String, self.callback_status)
+
+		# Publish to the scanned_barcode topic
+		self.scannedBar_pub = rospy.Publisher("/scanned_barcode", String, 
+			queue_size=1)
+
 	def callback(self,data):
 		# Convert the raw image to OpenCV format
 		self.cvtImage(data)
@@ -61,6 +69,17 @@ class BarcodeRecognition_node:
 
 		# Refresh the image on the screen
 		self.displayImg()
+
+	# 
+	def callback_status(self, data):
+		self.scanStatus = data.data
+
+		rospy.loginfo(self.scanStatus)
+
+		# TODO:
+#		# draw the barcode data and barcode type on the image
+#		cv2.putText(self.cv_image, "{}".format(self.scanStatus), (100, 100), 
+#			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
 	# Get the width and height of the image
 	def getCameraInfo(self, msg):
@@ -105,6 +124,12 @@ class BarcodeRecognition_node:
 				self.barcodeData, self.barcodeType), (self.x, 
 				self.y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, 
 				(0, 0, 255), 2)
+
+			# Publishing
+			self.scanCode = String()
+			self.scanCode.data = self.barcodeData
+
+			self.scannedBar_pub.publish(self.scanCode)
 
 	# Overlay some text onto the image display
 	def textInfo(self):

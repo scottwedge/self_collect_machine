@@ -46,6 +46,14 @@ class BarcodeRecognition_node:
 		self.imgRaw_sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
 				CompressedImage, self.callback, queue_size=1)
 
+		# Subscribe to the scan_status topic
+		self.imgInfo_sub = rospy.Subscriber("/scan_status", 
+				String, self.callback_status)
+
+		# Publish to the scanned_barcode topic
+		self.scannedBar_pub = rospy.Publisher("/scanned_barcode", String, 
+			queue_size=1)
+
 	def callback(self,data):
 		# Convert the raw image to OpenCV format
 		self.cvtImage(data)
@@ -61,6 +69,17 @@ class BarcodeRecognition_node:
 
 		# Refresh the image on the screen
 		self.displayImg()
+
+	# 
+	def callback_status(self, data):
+		self.scanStatus = data.data
+
+		rospy.loginfo(self.scanStatus)
+
+		# TODO:
+#		# draw the barcode data and barcode type on the image
+#		cv2.putText(self.cv_image, "{}".format(self.scanStatus), (100, 100), 
+#			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
 	# Get the width and height of the image
 	def getCameraInfo(self):
@@ -113,6 +132,12 @@ class BarcodeRecognition_node:
 				self.y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, 
 				(0, 0, 255), 2)
 
+			# Publishing
+			self.scanCode = String()
+			self.scanCode.data = self.barcodeData
+
+			self.scannedBar_pub.publish(self.scanCode)
+
 	# Overlay some text onto the image display
 	# Overlay some text onto the image display
 	def textInfo(self):
@@ -132,7 +157,7 @@ class BarcodeRecognition_node:
 	# Shutdown
 	def shutdown(self):
 		try:
-			rospy.loginfo("BarcodeRecognition_node [OFFLINE]...")
+			rospy.loginfo("[INFO] BarcodeRecognition_node [OFFLINE]...")
 
 		finally:
 			cv2.destroyAllWindows()
@@ -143,10 +168,10 @@ def main(args):
 	try:
 		rospy.spin()
 	except KeyboardInterrupt:
-		rospy.loginfo("BarcodeRecognition_node [OFFLINE]...")
+		rospy.loginfo("[INFO] BarcodeRecognition_node [OFFLINE]...")
 
 	cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-	rospy.loginfo("BarcodeRecognition_node [ONLINE]...")
+	rospy.loginfo("[INFO] BarcodeRecognition_node [ONLINE]...")
 	main(sys.argv)

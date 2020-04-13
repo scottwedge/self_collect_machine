@@ -9,9 +9,23 @@ the code (BAR/QR)
 > sudo apt-get install libzbar0
 > pip install pyzbar
 
-## Scripts
-1. camera_preview.py
-2. camera_barcode_recognition.py
-3. raspicam_preview.py
-4. raspicam_barcode_recognition.py
+2. UbiquityRobotics/raspicam_node
+> https://github.com/UbiquityRobotics/raspicam_node
 
+3. cv_camera
+> http://wiki.ros.org/cv_camera
+
+## Scripts
+> USB Camera
+>> 1. camera_preview.py
+>> 2. camera_barcode_recognition.py
+>> 3. camera_barcode_record.py
+
+> Raspicam
+>> 1. raspicam_preview.py
+>> 2. raspicam_barcode_recognition.py
+>> 3. raspicam_barcode_record.py
+
+## Launch
+1. camera_robot.launch
+2. raspicam_robot.launch
