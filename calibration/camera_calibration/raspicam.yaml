@@ -5,7 +5,7 @@ raspicam_node_robot:
   contrast: 50
   exposureCompensation: 0
   exposure_mode: auto
-  hFlip: false
+  hFlip: true
   saturation: 0
   sharpness: 0
   shutterSpeed: 100000
