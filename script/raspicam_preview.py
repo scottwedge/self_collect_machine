@@ -39,7 +39,7 @@ class RaspicamPreview_node:
 
 		# Subscribe to the raw camera image topic
 		self.imgRaw_sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
-				CompressedImage, self.callback, queue_size=1)
+				CompressedImage, self.callback, queue_size=10)
 
 	def callback(self,data):
 		# Convert the raw image to OpenCV format
@@ -59,6 +59,8 @@ class RaspicamPreview_node:
 		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
 		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
 
+		rospy.set_param("/raspicam_node_robot/raspicam_node_robot/vFlip", True)
+	
 	# Convert the raw image to OpenCV format
 	def cvtImage(self, data):
 		try:
@@ -71,6 +73,7 @@ class RaspicamPreview_node:
 
 			# OTIONAL -- image-rotate """
 			self.cv_image = imutils.rotate(self.cv_image, angle=-90)
+			self.cv_image = cv2.flip(self.cv_image,1)
 			self.cv_image_copy = self.cv_image.copy()
 
 		except CvBridgeError as e:
