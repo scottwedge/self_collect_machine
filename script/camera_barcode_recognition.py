@@ -63,7 +63,7 @@ class BarcodeRecognition_node:
 		self.cvtImage(data)
 
 		# Overlay some text onto the image display
-		self.textInfo()
+		#self.textInfo()
 
 		self.barcodeScan()
 
@@ -77,7 +77,7 @@ class BarcodeRecognition_node:
 		rospy.loginfo(self.scanStatus)
 
 		# TODO:
-#		# draw the barcode data and barcode type on the image
+		# draw the barcode data and barcode type on the image
 #		cv2.putText(self.cv_image, "{}".format(self.scanStatus), (100, 100), 
 #			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
@@ -119,6 +119,10 @@ class BarcodeRecognition_node:
 			self.barcodeData = self.barcode.data.decode("utf-8")
 			self.barcodeType = self.barcode.type
 
+			# TODO:
+			rospy.loginfo(self.barcodeData)
+
+			# TODO:
 			# draw the barcode data and barcode type on the image
 			cv2.putText(self.cv_image, "{} ({})".format(
 				self.barcodeData, self.barcodeType), (self.x, 

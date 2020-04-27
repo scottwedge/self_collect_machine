@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ################################################################################
-## {Description}: Record the QR/Bar Code
+## {Description}: Record the QR/Bar Code on CustomerDatabase
 ################################################################################
 ## Author: Khairul Izwan Bin Kamsani
 ## Version: {1}.{0}.{0}
@@ -24,10 +24,10 @@ import time
 import os
 import rospkg
 
-class BarcodeRecord_node:
+class StoreBarcodeRecord_node:
 	def __init__(self):
 		# Initializing your ROS Node
-		rospy.init_node('BarcodeRecord_node', anonymous=True)
+		rospy.init_node('StoreBarcodeRecord_node', anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
@@ -46,55 +46,70 @@ class BarcodeRecord_node:
 		#os.makedirs(self.outputDir)
 
 		#self.csv_filename = str(datetime.datetime.today()) + ".csv"
-		self.csv_filename = self.outputDir + "/barcode" + ".csv"
+		self.csv_filename = self.outputDir + "/store_barcode" + ".csv"
 		self.csv = open(self.csv_filename, "w")
 		self.found = set()
 
 		# Subscribe to the scanned_barcode topic
 		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, 
-				self.callback)
+				self.callbackScannedBar)
+
+		# Subscribe to the scan_mode topic
+		self.scanMode_sub = rospy.Subscriber("/scan_mode", String, 
+				self.callbackScanMode)
 
 		# TODO:
 		# Publish to the scan_status topic
 		self.scanStatus_pub = rospy.Publisher("/scan_status", String, 
 			queue_size=1)
 
-	def callback(self,data):
+	# TODO:
+	def callbackScanMode(self, data):
+		self.scanMode = data.data
+
+		#rospy.loginfo(self.scanMode)
+		if self.scanMode == "store":
+			#rospy.loginfo(self.barcodeData)
+
+			# if the barcode text is currently not in our CSV file, write
+			# the timestamp + barcode to disk and update the set
+			if self.barcodeData not in self.found:
+				self.csv.write("{},{}\n".format(datetime.datetime.now(),
+					self.barcodeData))
+				self.csv.flush()
+				self.found.add(self.barcodeData)
+
+			else:
+				# Publishing
+				self.scanStatus = String()
+				self.scanStatus.data = "Scanned!"
+
+				self.scanStatus_pub.publish(self.scanStatus)
+
+	# TODO:
+	def callbackScannedBar(self, data):
 		self.barcodeData = data.data
 
-		# if the barcode text is currently not in our CSV file, write
-		# the timestamp + barcode to disk and update the set
-		if self.barcodeData not in self.found:
-			self.csv.write("{},{}\n".format(datetime.datetime.now(),
-				self.barcodeData))
-			self.csv.flush()
-			self.found.add(self.barcodeData)
-
-		else:
-			# Publishing
-			self.scanStatus = String()
-			self.scanStatus.data = "Scanned!"
-
-			self.scanStatus_pub.publish(self.scanStatus)
+		#rospy.loginfo(self.barcodeData)
 
 	# Shutdown
 	def shutdown(self):
 		try:
-			rospy.loginfo("[INFO] BarcodeRecord_node [OFFLINE]...")
+			rospy.loginfo("[INFO] StoreBarcodeRecord_node [OFFLINE]...")
 
 		finally:
 			pass
 
 def main(args):
-	vn = BarcodeRecord_node()
+	vn = StoreBarcodeRecord_node()
 
 	try:
 		rospy.spin()
 	except KeyboardInterrupt:
-		rospy.loginfo("[INFO] BarcodeRecord_node [OFFLINE]...")
+		rospy.loginfo("[INFO] StoreBarcodeRecord_node [OFFLINE]...")
 
 	cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-	rospy.loginfo("[INFO] BarcodeRecord_node [ONLINE]...")
+	rospy.loginfo("[INFO] StoreBarcodeRecord_node [ONLINE]...")
 	main(sys.argv)
