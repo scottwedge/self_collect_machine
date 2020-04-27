@@ -5,7 +5,9 @@ collect thier purchased items during office or after office hours -- by scanning
 the code (BAR/QR)
 
 **Notes**
+
 StoreQR: OrderID & CustomerEmail
+
 CustQR: OrderID
 
 ### Required Package:
