@@ -17,12 +17,14 @@ import cv2
 import imutils
 
 from std_msgs.msg import String
+from self_collect_machine.msg import boxStatus
 
 from pyzbar import pyzbar
 import datetime
 import time
 import os
 import rospkg
+import numpy as np
 
 class StoreBarcodeRecord_node:
 	def __init__(self):
@@ -58,39 +60,57 @@ class StoreBarcodeRecord_node:
 		self.scanMode_sub = rospy.Subscriber("/scan_mode", String, 
 				self.callbackScanMode)
 
-		# TODO:
+		# Subscribe to the box_available topic
+		self.boxStatus_sub = rospy.Subscriber("/box_available", boxStatus, 
+				self.callbackBoxState)
+
 		# Publish to the scan_status topic
 		self.scanStatus_pub = rospy.Publisher("/scan_status", String, 
 			queue_size=1)
 
-	# TODO:
 	def callbackScanMode(self, data):
 		self.scanMode = data.data
 
 		#rospy.loginfo(self.scanMode)
 		if self.scanMode == "store":
 			#rospy.loginfo(self.barcodeData)
+			if len(self.boxID) > 0:
+				# if the barcode text is currently not in our CSV file, write
+				# the timestamp + barcode to disk and update the set
+				if self.barcodeData not in self.found:
+					self.csv.write("{}, {}, {}\n".format(datetime.datetime.now(),
+						self.barcodeData, self.boxID[0]))
+					# TODO: Un-comment for troubleshoot
+					rospy.logwarn("Saved as: {}, {}, {}\n".format(datetime.datetime.now(),
+						self.barcodeData, self.boxID[0]))
+					self.csv.flush()
+					self.found.add(self.barcodeData)
 
-			# if the barcode text is currently not in our CSV file, write
-			# the timestamp + barcode to disk and update the set
-			if self.barcodeData not in self.found:
-				self.csv.write("{},{}\n".format(datetime.datetime.now(),
-					self.barcodeData))
-				self.csv.flush()
-				self.found.add(self.barcodeData)
+				else:
+					# Publishing
+					self.scanStatus = String()
+					self.scanStatus.data = "Scanned!"
 
+					self.scanStatus_pub.publish(self.scanStatus)
 			else:
-				# Publishing
-				self.scanStatus = String()
-				self.scanStatus.data = "Scanned!"
+				rospy.logerr("No Empty Box Available")
 
-				self.scanStatus_pub.publish(self.scanStatus)
-
-	# TODO:
 	def callbackScannedBar(self, data):
 		self.barcodeData = data.data
 
+		# TODO: Un-comment for troubleshoot
 		#rospy.loginfo(self.barcodeData)
+
+	def callbackBoxState(self, data):
+		self.boxStatus = data.data
+
+		self.boxID = np.array(self.boxStatus)
+		self.boxID =  np.where(self.boxID == 0)[0]
+
+		# TODO: Un-comment for troubleshoot
+		#rospy.loginfo(self.boxStatus)
+		#rospy.loginfo(self.boxID)
+		#rospy.loginfo(len(self.boxID))
 
 	# Shutdown
 	def shutdown(self):

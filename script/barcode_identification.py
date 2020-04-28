@@ -37,7 +37,6 @@ class BarcodeIdentity_node:
 		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, 
 				self.callback)
 
-		# TODO:
 		# Publish to the scan_status topic
 		self.scanMode_pub = rospy.Publisher("/scan_mode", String, 
 			queue_size=1)
@@ -49,22 +48,20 @@ class BarcodeIdentity_node:
 		self.scanMode = String()
 
 		# Identify the barcode data
-		# TODO:
 		# Current approach:
 		# StoreQR: OrderID & CustomerEmail
 		# CustomerQR: OrderID
 		lst = re.findall('\S+@\S+', self.barcodeData)
 
 		if len(lst) == 1:
-			# TODO:
-			rospy.loginfo("Store Mode")
+			# TODO: Un-comment for troubleshoot
+			#rospy.loginfo("Store Mode")
 
-			# TODO:
 			self.scanMode.data = "store"
 
 		elif len(lst) == 0:
-			# TODO:
-			rospy.loginfo("Customer Mode")
+			# TODO: Un-comment for troubleshoot
+			#rospy.loginfo("Customer Mode")
 
 			# TODO:
 			self.scanMode.data = "customer"

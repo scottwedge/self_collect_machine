@@ -15,6 +15,7 @@ import sys
 import rospy
 
 from std_msgs.msg import String
+from std_msgs.msg import Int32
 
 import csv
 import datetime
@@ -42,6 +43,10 @@ class CustomerBarcodeValidate_node:
 		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", 
 				String, self.validate_callback)
 
+		# Publish to the boxID_activation topic
+		self.boxID_activation_pub = rospy.Publisher("/boxID_activation", Int32, 
+			queue_size=1)
+
 	# TODO:
 	def callbackScanMode(self, data):
 		self.scanMode = data.data
@@ -64,7 +69,15 @@ class CustomerBarcodeValidate_node:
 #					print(line)
 					#If the string you want to search is in the row
 					if a in line:
+						# TODO: Un-comment for troubleshoot
 						rospy.loginfo("Package(s) in box no {}".format(line[3]))
+
+						# Publishing
+						self.boxID_active = Int32()
+						self.boxID_active.data = line[3]
+
+						self.boxID_activation_pub.publish(self.boxID_active)
+
 #					elif a not in line:
 #						rospy.logerr("Not in record!")
 

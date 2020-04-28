@@ -6,7 +6,7 @@
 		type="raspicam_node" 
 		output="screen">
 
-		<rosparam command="load" file="$(find self_collect_machine)/calibration/camera_calibration/raspicam.yaml" />
+		<rosparam command="load" file="$(find self_collect_machine)/calibration/camera_calibration/raspicam.yaml"/>
 		<param name="width" value="320"/>
 		<param name="height" value="240"/>
 		<param name="framerate" value="90"/>

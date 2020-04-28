@@ -87,6 +87,7 @@ CustQR: OrderID
 > roslaunch self_collect_machine camera_robot.launch
 >> This will run the camera -- in ready mode
 >> To test either the camera is showing a sequence of images; video run:
+
 > rosrun self_collect_machine camera_preview.py
 
 2. camera_barcode_recognition.py
@@ -105,7 +106,8 @@ CustQR: OrderID
 >> BoxID based on the availability. Once binded, the datas will be recorded
 >> under the store_barcode.csv
 
-	1. 
+	1. Microcontroller: 1. sensor reading on the availability of the box; 0 
+is empty and 1 is full (occupied).
 
 5. customer_barcode_record.py
 > rosrun self_collect_machine customer_barcode_record.py
