@@ -31,43 +31,32 @@ class CustomerBarcodeRecord_node:
 
 		rospy.on_shutdown(self.shutdown)
 
-		# open the output CSV file for writing and initialize the set of
-		# barcodes found thus far
-		# TODO:
-
-		# initialize the output directory path and create the output
-		# directory
+		# TODO: Un-comment for troubleshoot
 		rospy.logwarn("Create an output folder")
 
 		self.rospack = rospkg.RosPack()
 		self.p = os.path.sep.join([self.rospack.get_path('self_collect_machine')])
-#		self.outputDir = os.path.join(self.p, datetime.datetime.now().strftime("%Y-%m-%d-%H%M"))
 		self.outputDir = os.path.join(self.p, "csv")
-		#os.makedirs(self.outputDir)
 
-		#self.csv_filename = str(datetime.datetime.today()) + ".csv"
 		self.csv_filename = self.outputDir + "/customer_barcode" + ".csv"
 		self.csv = open(self.csv_filename, "w")
 		self.found = set()
 
 		# Subscribe to the scanned_barcode topic
-		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, 
-				self.callbackScannedBar)
+		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, self.callbackScannedBar)
 
 		# Subscribe to the scan_mode topic
-		self.scanMode_sub = rospy.Subscriber("/scan_mode", String, 
-				self.callbackScanMode)
+		self.scanMode_sub = rospy.Subscriber("/scan_mode", String, self.callbackScanMode)
 
-		# TODO:
 		# Publish to the scan_status topic
-		self.scanStatus_pub = rospy.Publisher("/scan_status", String, 
-			queue_size=1)
+		self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=1)
 
-	# TODO:
 	def callbackScanMode(self, data):
 		self.scanMode = data.data
 
+		# TODO: Un-comment for troubleshoot
 		#rospy.loginfo(self.scanMode)
+
 		if self.scanMode == "customer":
 			#rospy.loginfo(self.barcodeData)
 
@@ -85,12 +74,11 @@ class CustomerBarcodeRecord_node:
 				self.scanStatus.data = "Scanned!"
 
 				self.scanStatus_pub.publish(self.scanStatus)
-		
 
-	# TODO:
 	def callbackScannedBar(self, data):
 		self.barcodeData = data.data
 
+		# TODO: Un-comment for troubleshoot
 		#rospy.loginfo(self.barcodeData)
 
 	# Shutdown
