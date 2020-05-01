@@ -34,37 +34,18 @@ class BarcodeIdentity_node:
 		rospy.on_shutdown(self.shutdown)
 
 		# Subscribe to the scanned_barcode topic
-		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, self.callback)
+		# self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, self.callback)
+		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)
 
 		# Publish to the scan_status topic
-		self.scanMode_pub = rospy.Publisher("/scan_mode", String, queue_size=1)
+		self.typeQR_pub = rospy.Publisher("/scan_mode", String, queue_size=10)
 
-	def callback(self,data):
-		self.barcodeData = data.data
+		self.getMode()
 
-		# Publishing
-		self.scanMode = String()
-
-		# Identify the barcode data
-		# Current approach:
-		# StoreQR: OrderID & CustomerEmail
-		# CustomerQR: OrderID
-		lst = re.findall('\S+@\S+', self.barcodeData)
-
-		if len(lst) == 1:
-			# TODO: Un-comment for troubleshoot
-			#rospy.loginfo("Store Mode")
-
-			self.scanMode.data = "store"
-
-		elif len(lst) == 0:
-			# TODO: Un-comment for troubleshoot
-			#rospy.loginfo("Customer Mode")
-
-			# TODO:
-			self.scanMode.data = "customer"
-
-		self.scanMode_pub.publish(self.scanMode)
+	# Get scanned barcode
+	def getQR(self):
+		# Wait for the topic
+		self.qr = rospy.wait_for_message("/scanned_barcode", String)
 
 	# Shutdown
 	def shutdown(self):
@@ -73,6 +54,35 @@ class BarcodeIdentity_node:
 
 		finally:
 			pass
+
+	def getMode(self):
+		# Initiate the topic
+		self.typeQR = String()
+
+		while not rospy.is_shutdown():
+			# Get the scan-ed data
+			self.getQR()
+
+			# Identify the barcode data
+			# Current approach:
+			# StoreQR: OrderID & CustomerEmail
+			# CustomerQR: OrderID
+			lst = re.findall('\S+@\S+', self.qr.data)
+
+			if len(lst) == 1:
+				# TODO: Un-comment for troubleshoot
+				#rospy.loginfo("Store Mode")
+
+				self.typeQR.data = "store"
+
+			elif len(lst) == 0:
+				# TODO: Un-comment for troubleshoot
+				#rospy.loginfo("Customer Mode")
+
+				# TODO:
+				self.typeQR.data = "customer"
+
+			self.typeQR_pub.publish(self.typeQR)
 
 def main(args):
 	vn = BarcodeIdentity_node()

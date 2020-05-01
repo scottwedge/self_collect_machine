@@ -38,56 +38,16 @@ class RaspicamPreview_node:
 		self.bridge = CvBridge()
 
 		# Subscribe to the raw camera image topic
-		self.imgRaw_sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
-				CompressedImage, self.callback, queue_size=1)
+		self.imgRaw_sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", CompressedImage)
 
-	def callback(self,data):
-		# Convert the raw image to OpenCV format
-		self.cvtImage(data)
-
-		# Get the width and height of the image
-		self.getCameraInfo()
-
-		# Overlay some text onto the image display
-		self.textInfo()
-
-		# Refresh the image on the screen
-		self.displayImg()
-
-	# Get the width and height of the image
-	def getCameraInfo(self):
-		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
-		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
-
-		rospy.set_param("/raspicam_node_robot/raspicam_node_robot/vFlip", True)
-
-	# Convert the raw image to OpenCV format
-	def cvtImage(self, data):
-		try:
-			# Convert the raw image to OpenCV format """
-			# self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-
-			# direct conversion to CV2 ####
-			self.cv_image = np.fromstring(data.data, np.uint8)
-			self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
-
-			# OTIONAL -- image-rotate """
-			self.cv_image = imutils.rotate(self.cv_image, angle=-90)
-			self.cv_image = cv2.flip(self.cv_image,1)
-			self.cv_image_copy = self.cv_image.copy()
-
-		except CvBridgeError as e:
-			print(e)
+	def getImage(self):
+		# Wait for the topic
+		self.image = rospy.wait_for_message("/raspicam_node_robot/image/compressed", CompressedImage)
 
 	# Overlay some text onto the image display
 	def textInfo(self):
-		cv2.putText(self.cv_image, "Sample", (10, self.image_height-10), 
-			cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, 
-			cv2.LINE_AA, False)
-		cv2.putText(self.cv_image, "(%d, %d)" % (self.image_width, 
-			self.image_height), (self.image_width-100, 
-			self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, 
-			(255, 255, 255), 1, cv2.LINE_AA, False)
+		cv2.putText(self.cv_image, "Sample", (10, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+		cv2.putText(self.cv_image, "(%d, %d)" % (self.image_width, self.image_height), (self.image_width-100, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
 
 	# Refresh the image on the screen
 	def displayImg(self):
@@ -101,6 +61,34 @@ class RaspicamPreview_node:
 
 		finally:
 			cv2.destroyAllWindows()
+
+	# Convert the raw image to OpenCV format
+	def cvtImage(self):
+		while not rospy.is_shutdown():
+			try:
+				# Get the scan-ed data
+				self.getImage()
+
+				# direct conversion to CV2 ####
+				self.cv_image = np.fromstring(data.data, np.uint8)
+				self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
+
+				# OPTIONAL -- image-rotate """
+				self.cv_image = imutils.rotate(self.cv_image, angle=-90)
+				self.cv_image = cv2.flip(self.cv_image,1)
+
+				# TODO:
+				#self.cv_image = imutils.rotate(self.cv_image, angle=180)
+				self.cv_image_copy = self.cv_image.copy()
+
+				# Overlay some text onto the image display
+				self.textInfo()
+
+				# Refresh the image on the screen
+				self.dispImage()
+
+			except CvBridgeError as e:
+				print(e)
 
 def main(args):
 	vn = RaspicamPreview_node()

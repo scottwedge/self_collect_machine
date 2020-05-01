@@ -32,7 +32,7 @@ class CustomerBarcodeRecord_node:
 		rospy.on_shutdown(self.shutdown)
 
 		# TODO: Un-comment for troubleshoot
-		rospy.logwarn("Create an output folder")
+		rospy.logwarn("Create an output for CUSTOMER Scanned QR-Code")
 
 		self.rospack = rospkg.RosPack()
 		self.p = os.path.sep.join([self.rospack.get_path('self_collect_machine')])
@@ -43,44 +43,26 @@ class CustomerBarcodeRecord_node:
 		self.found = set()
 
 		# Subscribe to the scanned_barcode topic
-		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, self.callbackScannedBar)
+		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)
 
 		# Subscribe to the scan_mode topic
-		self.scanMode_sub = rospy.Subscriber("/scan_mode", String, self.callbackScanMode)
+		self.scanMode_sub = rospy.Subscriber("/scan_mode", String)
 
 		# TODO
 		# Publish to the scan_status topic
-		#self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=1)
+		#self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
 
-	def callbackScanMode(self, data):
-		self.scanMode = data.data
+		self.customerRecord()
 
-		# TODO: Un-comment for troubleshoot
-		#rospy.loginfo(self.scanMode)
+	# Get scanned barcode
+	def getQR(self):
+		# Wait for the topic
+		self.qr = rospy.wait_for_message("/scanned_barcode", String)
 
-		if self.scanMode == "customer":
-			#rospy.loginfo(self.barcodeData)
-
-			# if the barcode text is currently not in our CSV file, write
-			# the timestamp + barcode to disk and update the set
-			if self.barcodeData not in self.found:
-				self.csv.write("{},{}\n".format(datetime.datetime.now(), self.barcodeData))
-				self.csv.flush()
-				self.found.add(self.barcodeData)
-
-		# TODO
-			#else:
-				# Publishing
-				#self.scanStatus = String()
-				#self.scanStatus.data = "Scanned!"
-
-				#self.scanStatus_pub.publish(self.scanStatus)
-
-	def callbackScannedBar(self, data):
-		self.barcodeData = data.data
-
-		# TODO: Un-comment for troubleshoot
-		#rospy.loginfo(self.barcodeData)
+	# Get scanned barcode
+	def getMode(self):
+		# Wait for the topic
+		self.mode = rospy.wait_for_message("/scan_mode", String)
 
 	# Shutdown
 	def shutdown(self):
@@ -89,6 +71,30 @@ class CustomerBarcodeRecord_node:
 
 		finally:
 			pass
+
+	def customerRecord(self):
+		# TODO
+		# Initiate the topic
+		#self.scanStatus = String()
+
+		while not rospy.is_shutdown():
+			# Get the scan-ed data
+			self.getQR()
+			self.getMode()
+
+			if self.mode.data == "customer":
+				# TODO: Un-comment for troubleshoot
+				#rospy.loginfo(self.barcodeData)
+
+				# if the barcode text is currently not in our CSV file, write
+				# the timestamp + barcode to disk and update the set
+				if self.qr.data not in self.found:
+					self.csv.write("{},{}\n".format(datetime.datetime.now(), self.qr.data))
+					self.csv.flush()
+					self.found.add(self.qr.data)
+
+				else:
+					rospy.logerr("IN CUSTOMER Record!")
 
 def main(args):
 	vn = CustomerBarcodeRecord_node()

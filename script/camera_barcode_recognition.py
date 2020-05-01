@@ -43,20 +43,16 @@ class BarcodeRecognition_node:
 		self.bridge = CvBridge()
 
 		# Subscribe to the raw camera image topic
-		self.imgRaw_sub = rospy.Subscriber("/cv_camera/image_raw", 
-				Image, self.callback)
+		self.imgRaw_sub = rospy.Subscriber("/cv_camera/image_raw", Image, self.callback)
 
 		# Subscribe to the camera info topic
-		self.imgInfo_sub = rospy.Subscriber("/cv_camera/camera_info", 
-				CameraInfo, self.getCameraInfo)
+		self.imgInfo_sub = rospy.Subscriber("/cv_camera/camera_info", CameraInfo, self.getCameraInfo)
 
 		# Subscribe to the scan_status topic
-		self.imgInfo_sub = rospy.Subscriber("/scan_status", 
-				String, self.callback_status)
+		self.imgInfo_sub = rospy.Subscriber("/scan_status", String, self.callback_status)
 
 		# Publish to the scanned_barcode topic
-		self.scannedBar_pub = rospy.Publisher("/scanned_barcode", String, 
-			queue_size=1)
+		self.scannedBar_pub = rospy.Publisher("/scanned_barcode", String, queue_size=1)
 
 	def callback(self,data):
 		# Convert the raw image to OpenCV format

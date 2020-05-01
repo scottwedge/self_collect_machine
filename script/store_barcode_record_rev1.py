@@ -45,62 +45,38 @@ class StoreBarcodeRecord_node:
 
 		#self.csv_filename = str(datetime.datetime.today()) + ".csv"
 		self.csv_filename = self.outputDir + "/store_barcode" + ".csv"
-		self.csv = open(self.csv_filename, "w")
+		self.csv = open(self.csv_filename, "a")
 		self.found = set()
 
 		# Subscribe to the scanned_barcode topic
-		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, self.callbackScannedBar)
+		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)
 
 		# Subscribe to the scan_mode topic
-		self.scanMode_sub = rospy.Subscriber("/scan_mode", String, self.callbackScanMode)
+		self.scanMode_sub = rospy.Subscriber("/scan_mode", String)
 
 		# Subscribe to the box_available topic
-		self.boxStatus_sub = rospy.Subscriber("/box_available", boxStatus, self.callbackBoxState)
+		self.boxStatus_sub = rospy.Subscriber("/box_available", boxStatus)
 
+		# TODO
 		# Publish to the scan_status topic
-		self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
+		#self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
 
-	def callbackScanMode(self, data):
-		self.scanMode = data.data
+		self.storeRecord()
 
-		#rospy.loginfo(self.scanMode)
-		if self.scanMode == "store":
-			#rospy.loginfo(self.barcodeData)
-			if len(self.boxID) > 0:
-				# if the barcode text is currently not in our CSV file, write
-				# the timestamp + barcode to disk and update the set
-				if self.barcodeData not in self.found:
-					self.csv.write("{}, {}, {}\n".format(datetime.datetime.now(), self.barcodeData, self.boxID[0]))
-					# TODO: Un-comment for troubleshoot
-					rospy.logwarn("Saved as: {}, {}, {}\n".format(datetime.datetime.now(), self.barcodeData, self.boxID[0]))
-					self.csv.flush()
-					self.found.add(self.barcodeData)
+	# Get scanned barcode
+	def getQR(self):
+		# Wait for the topic
+		self.qr = rospy.wait_for_message("/scanned_barcode", String)
 
-				else:
-					# Publishing
-					self.scanStatus = String()
-					self.scanStatus.data = "Scanned!"
+	# Get scanned barcode
+	def getMode(self):
+		# Wait for the topic
+		self.mode = rospy.wait_for_message("/scan_mode", String)
 
-					self.scanStatus_pub.publish(self.scanStatus)
-			else:
-				rospy.logerr("No Empty Box Available")
-
-	def callbackScannedBar(self, data):
-		self.barcodeData = data.data
-
-		# TODO: Un-comment for troubleshoot
-		#rospy.loginfo(self.barcodeData)
-
-	def callbackBoxState(self, data):
-		self.boxStatus = data.data
-
-		self.boxID = np.array(self.boxStatus)
-		self.boxID =  np.where(self.boxID == 0)[0]
-
-		# TODO: Un-comment for troubleshoot
-		#rospy.loginfo(self.boxStatus)
-		#rospy.loginfo(self.boxID)
-		#rospy.loginfo(len(self.boxID))
+	# Get scanned barcode
+	def getBox(self):
+		# Wait for the topic
+		self.box = rospy.wait_for_message("/box_available", boxStatus)
 
 	# Shutdown
 	def shutdown(self):
@@ -109,6 +85,45 @@ class StoreBarcodeRecord_node:
 
 		finally:
 			pass
+
+	def storeRecord(self):
+		# TODO
+		# Initiate the topic
+		#self.scanStatus = String()
+
+		while not rospy.is_shutdown():
+			# Get the scan-ed data
+			self.getQR()
+			self.getMode()
+			self.getBox()
+
+			self.boxID = np.array(self.box.data)
+			self.boxID = np.where(self.boxID == 0)[0]
+
+			#rospy.loginfo(self.scanMode)
+			if self.mode.data == "store":
+				# TODO: Un-comment for troubleshoot
+				#rospy.loginfo(self.qr.data)
+
+				if len(self.boxID) > 0:
+					# TODO: Un-comment for troubleshoot
+					#rospy.logwarn("Empty Box Available")
+
+					# if the barcode text is currently not in our CSV file, write
+					# the timestamp + barcode to disk and update the set
+					if self.qr.data not in self.found:
+						self.csv.write("{},{},{}\n".format(datetime.datetime.now(), self.qr.data, self.boxID[0]))
+						# TODO: Un-comment for troubleshoot
+						rospy.logwarn("Saved as: {},{},{}\n".format(datetime.datetime.now(), self.qr.data, self.boxID[0]))
+						self.csv.flush()
+						self.found.add(self.qr.data)
+
+					else:
+						rospy.logerr("IN Record!")
+
+				else:
+					rospy.logerr("No Empty Box Available")
+
 
 def main(args):
 	vn = StoreBarcodeRecord_node()

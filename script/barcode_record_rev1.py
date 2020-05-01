@@ -47,10 +47,18 @@ class BarcodeRecord_node:
 		self.found = set()
 
 		# Subscribe to the scanned_barcode topic
-		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String, self.callback)
+		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)
 
+		# TODO
 		# Publish to the scan_status topic
-		self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
+		#self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
+
+		self.recordQR()
+
+	# Get scanned barcode
+	def getQR(self):
+		# Wait for the topic
+		self.qr = rospy.wait_for_message("/scanned_barcode", String)
 
 	# Shutdown
 	def shutdown(self):
@@ -60,23 +68,26 @@ class BarcodeRecord_node:
 		finally:
 			pass
 
-	def callback(self,data):
-		self.barcodeData = data.data
+	def recordQR(self):
+		# TODO
+		# Initiate the topic
+		#self.scanStatus = String()
 
-		# if the barcode text is currently not in our CSV file, write
-		# the timestamp + barcode to disk and update the set
-		if self.barcodeData not in self.found:
-			self.csv.write("{},{}\n".format(datetime.datetime.now(),
-				self.barcodeData))
-			self.csv.flush()
-			self.found.add(self.barcodeData)
+		while not rospy.is_shutdown():
+			# Get the scan-ed data
+			self.getQR()
 
-		else:
-			# Publishing
-			self.scanStatus = String()
-			self.scanStatus.data = "Scanned!"
+			# if the barcode text is currently not in our CSV file, write
+			# the timestamp + barcode to disk and update the set
+			if self.qr.data not in self.found:
+				self.csv.write("{},{}\n".format(datetime.datetime.now(), self.qr.data))
+				self.csv.flush()
 
-			self.scanStatus_pub.publish(self.scanStatus)
+				self.found.add(self.qr.data)
+				rospy.logwarn("Record IN")
+
+			else:
+				rospy.logerr("IN Record!")
 
 def main(args):
 	vn = BarcodeRecord_node()

@@ -37,38 +37,21 @@ class CameraPreview_node:
 		self.bridge = CvBridge()
 
 		# Subscribe to the raw camera image topic
-		self.imgRaw_sub = rospy.Subscriber("/cv_camera/image_raw", Image, self.callback)
+		self.imgRaw_sub = rospy.Subscriber("/cv_camera/image_raw", Image)
 
 		# Subscribe to the camera info topic
-		self.imgInfo_sub = rospy.Subscriber("/cv_camera/camera_info", CameraInfo, self.getCameraInfo)
+		self.imgInfo_sub = rospy.Subscriber("/cv_camera/camera_info", CameraInfo)
 
-	def callback(self,data):
-		# Convert the raw image to OpenCV format
-		self.cvtImage(data)
+		self.cvtImage()
 
-		# Overlay some text onto the image display
-		self.textInfo()
-
-		# Refresh the image on the screen
-		self.displayImg()
+	def getImage(self):
+		# Wait for the topic
+		self.image = rospy.wait_for_message("/cv_camera/image_raw", Image)
 
 	# Get the width and height of the image
-	def getCameraInfo(self, msg):
-		self.image_width = msg.width
-		self.image_height = msg.height
-
-	# Convert the raw image to OpenCV format
-	def cvtImage(self, data):
-		try:
-			# Convert the raw image to OpenCV format """
-			self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-
-			# TODO:
-			#self.cv_image = imutils.rotate(self.cv_image, angle=180)
-			self.cv_image_copy = self.cv_image.copy()
-
-		except CvBridgeError as e:
-			print(e)
+	def getCameraInfo(self):
+		# Wait for the topic
+		self.camerainfo = rospy.wait_for_message("/cv_camera/camera_info", CameraInfo)
 
 	# Overlay some text onto the image display
 	def textInfo(self):
@@ -79,21 +62,47 @@ class CameraPreview_node:
 		lineType = cv2.LINE_AA
 		bottomLeftOrigin = False # if True (text upside down)
 
-		cv2.putText(self.cv_image, "Sample", (10, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
-		cv2.putText(self.cv_image, "(%d, %d)" % (self.image_width, self.image_height), (self.image_width-100, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+		# Get the scan-ed data
+		self.getCameraInfo()
+
+		cv2.putText(self.cv_image, "Sample", (10, self.camerainfo.height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+		cv2.putText(self.cv_image, "(%d, %d)" % (self.camerainfo.width, self.camerainfo.height), (self.camerainfo.width-100, self.camerainfo.height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
 
 	# Refresh the image on the screen
-	def displayImg(self):
+	def dispImage(self):
 		cv2.imshow(self.cv_window_name, self.cv_image)
 		cv2.waitKey(1)
 
 	# Shutdown
 	def shutdown(self):
 		try:
-			rospy.loginfo("CameraPreview_node [OFFLINE]...")
+			rospy.logwarn("CameraPreview_node [OFFLINE]...")
 
 		finally:
 			cv2.destroyAllWindows()
+
+	# Convert the raw image to OpenCV format
+	def cvtImage(self):
+		while not rospy.is_shutdown():
+			try:
+				# Get the scan-ed data
+				self.getImage()
+
+				# Convert the raw image to OpenCV format """
+				self.cv_image = self.bridge.imgmsg_to_cv2(self.image, "bgr8")
+
+				# TODO:
+				#self.cv_image = imutils.rotate(self.cv_image, angle=180)
+				self.cv_image_copy = self.cv_image.copy()
+
+				# Overlay some text onto the image display
+				self.textInfo()
+
+				# Refresh the image on the screen
+				self.dispImage()
+
+			except CvBridgeError as e:
+				print(e)
 
 def main(args):
 	vn = CameraPreview_node()

@@ -1,0 +1,176 @@
+#!/usr/bin/env python
+
+################################################################################
+## {Description}: Code (Bar/QR) Recognition using USB type camera
+################################################################################
+## Author: Khairul Izwan Bin Kamsani
+## Version: {1}.{0}.{0}
+## Email: {wansnap@gmail.com}
+################################################################################
+
+from __future__ import print_function
+from __future__ import division
+
+import sys
+import rospy
+import cv2
+import imutils
+
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from sensor_msgs.msg import CameraInfo
+
+from cv_bridge import CvBridge
+from cv_bridge import CvBridgeError
+
+import numpy as np
+
+from pyzbar import pyzbar
+import datetime
+import time
+
+class BarcodeRecognition_node:
+	def __init__(self):
+		# Initializing your ROS Node
+		rospy.init_node('BarcodeRecognition_node', anonymous=True)
+
+		rospy.on_shutdown(self.shutdown)
+
+		# Give the OpenCV display window a name
+		self.cv_window_name = "Barcode Recognition"
+
+		# Create the cv_bridge object
+		self.bridge = CvBridge()
+
+		# Subscribe to the raw camera image topic
+		self.imgRaw_sub = rospy.Subscriber("/cv_camera/image_raw", Image)
+
+		# Subscribe to the camera info topic
+		self.imgInfo_sub = rospy.Subscriber("/cv_camera/camera_info", CameraInfo)
+
+		# TODO: Un-comment for troubleshoot
+		# Subscribe to the scan_status topic
+		#self.scanStatus_sub = rospy.Subscriber("/scan_status", String)
+
+		# Publish to the scanned_barcode topic
+		self.scannedBar_pub = rospy.Publisher("/scanned_barcode", String, queue_size=10)
+
+		self.getBarcode()
+
+	# TODO: Un-comment for troubleshoot
+	#def getScanStatus(self):
+		# Wait for the topic
+		#self.status = rospy.wait_for_message("/scan_status", String)
+
+	def getImage(self):
+		# Wait for the topic
+		self.image = rospy.wait_for_message("/cv_camera/image_raw", Image)
+
+	# Get the width and height of the image
+	def getCameraInfo(self):
+		# Wait for the topic
+		self.camerainfo = rospy.wait_for_message("/cv_camera/camera_info", CameraInfo)
+
+	# Overlay some text onto the image display
+	def textInfo(self):
+		fontFace = cv2.FONT_HERSHEY_DUPLEX
+		fontScale = 0.5
+		color = (255, 255, 255)
+		thickness = 1
+		lineType = cv2.LINE_AA
+		bottomLeftOrigin = False # if True (text upside down)
+
+		# Get the scan-ed data
+		self.getCameraInfo()
+
+		cv2.putText(self.cv_image, "Sample", (10, self.camerainfo.height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+		cv2.putText(self.cv_image, "(%d, %d)" % (self.camerainfo.width, self.camerainfo.height), (self.camerainfo.width-100, self.camerainfo.height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+
+	# Refresh the image on the screen
+	def dispImage(self):
+		cv2.imshow(self.cv_window_name, self.cv_image)
+		cv2.waitKey(1)
+
+	# Shutdown
+	def shutdown(self):
+		try:
+			rospy.logwarn("CameraPreview_node [OFFLINE]...")
+
+		finally:
+			cv2.destroyAllWindows()
+
+	def getBarcode(self):
+		while not rospy.is_shutdown():
+			try:
+				# Get the scan-ed data
+				self.getImage()
+
+				#self.getScanStatus.data = 'Test!'
+
+				# Convert the raw image to OpenCV format """
+				self.cv_image = self.bridge.imgmsg_to_cv2(self.image, "bgr8")
+
+				# TODO: Un-comment for troubleshoot
+				#self.cv_image = imutils.rotate(self.cv_image, angle=180)
+				#self.cv_image_copy = self.cv_image.copy()
+
+				# find the barcodes in the frame and decode each of the barcodes
+				self.barcodes = pyzbar.decode(self.cv_image)
+
+				# loop over the detected barcodes
+				for self.barcode in self.barcodes:
+					# TODO: Un-comment for troubleshoot
+					# Get the scan-ed data
+					#self.getScanStatus()
+
+					# extract the bounding box location of the barcode and 
+					# draw the bounding box surrounding the barcode on the 
+					# image
+					(self.x, self.y, self.w, self.h) = self.barcode.rect
+					cv2.rectangle(self.cv_image, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 0, 255), 2)
+
+					# the barcode data is a bytes object so if we want to 
+					# draw it on our output image we need to convert it to 
+					# a string first
+					self.barcodeData = self.barcode.data.decode("utf-8")
+					self.barcodeType = self.barcode.type
+
+					# TODO: Un-comment for troubleshoot
+					#rospy.loginfo(self.barcodeData)
+
+					# TODO: Un-comment for troubleshoot
+					# draw the barcode data and barcode type on the image
+					cv2.putText(self.cv_image, "{} ({})".format(self.barcodeData, self.barcodeType), (self.x, self.y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+					# Publishing
+					self.scanCode = String()
+					self.scanCode.data = self.barcodeData
+
+					self.scannedBar_pub.publish(self.scanCode)
+
+				# Overlay some text onto the image display
+				self.textInfo()
+
+				# TODO:
+				#rospy.logwarn(self.getScanStatus.data)
+				#cv2.putText(self.cv_image, "{}".format(self.getScanStatus.data), (self.camerainfo.width-50, self.camerainfo.height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+
+				# Refresh the image on the screen
+				self.dispImage()
+
+			except CvBridgeError as e:
+				print(e)
+
+def main(args):
+	vn = BarcodeRecognition_node()
+
+	try:
+		rospy.spin()
+	except KeyboardInterrupt:
+		rospy.loginfo("BarcodeRecognition_node [OFFLINE]...")
+
+	cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+	rospy.loginfo("BarcodeRecognition_node [ONLINE]...")
+	main(sys.argv)

@@ -30,40 +30,39 @@ class BoxIDValidate_node:
 		rospy.on_shutdown(self.shutdown)
 
 		# Subscribe to the sensorState_1 topic
-		self.sensorState1_sub = rospy.Subscriber("/sensorState_1", Int32, self.callbackSensorState1)
+		self.sensorState1_sub = rospy.Subscriber("/sensorState_1", Int32)
 
 		# Subscribe to the sensorState_2 topic
-		self.sensorState2_sub = rospy.Subscriber("/sensorState_2", Int32, self.callbackSensorState2)
+		self.sensorState2_sub = rospy.Subscriber("/sensorState_2", Int32)
 
 		# Subscribe to the sensorState_3 topic
-		self.sensorState3_sub = rospy.Subscriber("/sensorState_3", Int32, self.callbackSensorState3)
+		self.sensorState3_sub = rospy.Subscriber("/sensorState_3", Int32)
+
+		# TODO: may add more
+		# Subscribe to the sensorState_N topic
+		#self.sensorStateN_sub = rospy.Subscriber("/sensorState_N", Int32)
 
 		# Publish to the scanned_barcode topic
-		self.boxStatus_pub = rospy.Publisher("/box_available", boxStatus, queue_size=1)
+		self.boxStatus_pub = rospy.Publisher("/box_available", boxStatus, queue_size=10)
 
-	def callbackSensorState1(self, data):
-		self.boxID_1 = data.data
+		self.getBoxState()
 
-		# TODO: Un-comment for troubleshoot
-		#rospy.loginfo(self.boxID_1)
+	def getSensorState1(self):
+		# Wait for the topic
+		self.state1 = rospy.wait_for_message("/sensorState_1", String)
 
-	def callbackSensorState2(self, data):
-		self.boxID_2 = data.data
+	def getSensorState2(self):
+		# Wait for the topic
+		self.state2 = rospy.wait_for_message("/sensorState_2", String)
 
-		# TODO: Un-comment for troubleshoot
-		#rospy.loginfo(self.boxID_2)
+	def getSensorState3(self):
+		# Wait for the topic
+		self.state3 = rospy.wait_for_message("/sensorState_3", String)
 
-	def callbackSensorState3(self, data):
-		self.boxID_3 = data.data
-
-		# TODO: Un-comment for troubleshoot
-		#rospy.loginfo(self.boxID_3)
-
-		# Publishing
-		self.scanBox = boxStatus()
-		self.scanBox.data = [self.boxID_1, self.boxID_2, self.boxID_3]
-
-		self.boxStatus_pub.publish(self.scanBox)
+	# TODO: may add more
+	#def getSensorStateN(self):
+		# Wait for the topic
+		#self.stateN = rospy.wait_for_message("/sensorState_N", String)
 
 	# Shutdown
 	def shutdown(self):
@@ -72,6 +71,20 @@ class BoxIDValidate_node:
 
 		finally:
 			pass
+
+	def getBoxState(self):
+		# Initiate the topic
+		self.boxState = boxStatus()
+
+		while not rospy.is_shutdown():
+			# Get the scan-ed data
+			self.getSensorState1()
+			self.getSensorState2()
+			self.getSensorState3()
+			# TODO: May add more here
+
+			self.boxState.data = [self.state1.data, self.state2.data, self.state3.data]
+			self.boxStatus_pub.publish(self.boxState)
 
 def main(args):
 	vn = BoxIDValidate_node()
