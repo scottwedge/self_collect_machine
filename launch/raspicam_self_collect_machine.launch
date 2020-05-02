@@ -1,0 +1,14 @@
+<launch>
+
+	<!-- USB Camera -->
+	<include file="$(find self_collect_machine)/launch/camera_robot.launch"/>
+
+	<!-- Preview -->
+	<!-- Preview -->
+	<node	pkg="self_collect_machine"
+		type="raspicam_preview.py"
+		name="raspicam_preview"
+		output="screen">
+	</node>
+
+</launch>
