@@ -86,9 +86,6 @@ class BarcodeRecognition_node:
 				# Get the scan-ed data
 				self.getImage()
 
-				# Convert the raw image to OpenCV format """
-				self.cv_image = self.bridge.imgmsg_to_cv2(self.image, "bgr8")
-
 				# direct conversion to CV2 ####
 				self.cv_image = np.fromstring(self.image.data, np.uint8)
 				self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
