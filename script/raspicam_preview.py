@@ -72,7 +72,7 @@ class RaspicamPreview_node:
 				self.getImage()
 
 				# direct conversion to CV2 ####
-				self.cv_image = np.fromstring(data.data, np.uint8)
+				self.cv_image = np.fromstring(self.image.data, np.uint8)
 				self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
 
 				# OPTIONAL -- image-rotate """
