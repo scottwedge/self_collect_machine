@@ -40,6 +40,8 @@ class RaspicamPreview_node:
 		# Subscribe to the raw camera image topic
 		self.imgRaw_sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", CompressedImage)
 
+		self.cvtImage()
+
 	def getImage(self):
 		# Wait for the topic
 		self.image = rospy.wait_for_message("/raspicam_node_robot/image/compressed", CompressedImage)
