@@ -1,7 +1,7 @@
 <launch>
 
 	<!-- USB Camera -->
-	<include file="$(find self_collect_machine)/launch/camera_robot.launch"/>
+	<include file="$(find self_collect_machine)/launch/raspicam_robot.launch"/>
 
 	<!-- Preview -->
 	<!-- Preview -->
