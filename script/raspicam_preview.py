@@ -53,7 +53,7 @@ class RaspicamPreview_node:
 		cv2.putText(self.cv_image, "(%d, %d)" % (self.image_width, self.image_height), (self.image_width-100, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
 
 	# Refresh the image on the screen
-	def displayImg(self):
+	def dispImage(self):
 		cv2.imshow(self.cv_window_name, self.cv_image)
 		cv2.waitKey(1)
 
