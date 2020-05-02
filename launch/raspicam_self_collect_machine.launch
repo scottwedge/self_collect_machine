@@ -5,9 +5,17 @@
 
 	<!-- Preview -->
 	<!-- Preview -->
+	<!-- <node	pkg="self_collect_machine"  -->
+	<!-- 	type="raspicam_preview.py"  -->
+	<!-- 	name="raspicam_preview"  -->
+	<!-- 	output="screen">  -->
+	<!-- </node>  -->
+
+	<!-- Store/Customer -->
+	<!-- QR Code Recognition -->
 	<node	pkg="self_collect_machine"
-		type="raspicam_preview.py"
-		name="raspicam_preview"
+		type="raspicam_barcode_recognition.py"
+		name="raspicam_barcode_recognition"
 		output="screen">
 	</node>
 
