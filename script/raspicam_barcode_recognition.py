@@ -64,7 +64,7 @@ class BarcodeRecognition_node:
 	def textInfo(self):
 		self.getCameraInfo()
 
-		cv2.putText(self.cv_image, "Sample", (10, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+		cv2.putText(self.cv_image, "Testing Mode", (10, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
 		cv2.putText(self.cv_image, "(%d, %d)" % (self.image_width, self.image_height), (self.image_width-100, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
 
 	# Refresh the image on the screen

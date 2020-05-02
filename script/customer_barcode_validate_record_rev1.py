@@ -44,7 +44,7 @@ class CustomerBarcodeRecord_node:
 		self.csv = open(self.csv_filename, "a")
 		self.found = set()
 
-		self.csv_filename_store = "/home/khairulizwan/catkin_ws/src/self_collect_machine/csv/store_barcode.csv"
+		self.csv_filename_store = self.outputDir + "/store_barcode" + ".csv"
 
 		# Subscribe to the scanned_barcode topic
 		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)

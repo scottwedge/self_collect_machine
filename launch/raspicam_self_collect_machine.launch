@@ -11,8 +11,8 @@
 	<!-- 	output="screen">  -->
 	<!-- </node>  -->
 
-	<!-- Store/Customer -->
-	<!-- QR Code Recognition -->
+	<!-- Store and Customer -->
+	<!-- BarCode/QR-Code Recognition -->
 	<node	pkg="self_collect_machine"
 		type="raspicam_barcode_recognition.py"
 		name="raspicam_barcode_recognition"
