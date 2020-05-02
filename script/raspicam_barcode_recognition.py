@@ -48,7 +48,7 @@ class BarcodeRecognition_node:
 		# Publish to the scanned_barcode topic
 		self.scannedBar_pub = rospy.Publisher("/scanned_barcode", String, queue_size=10)
 
-		self.cvtImage()
+		self.getBarcode()
 
 	def getImage(self):
 		# Wait for the topic
