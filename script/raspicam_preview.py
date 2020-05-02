@@ -46,6 +46,7 @@ class RaspicamPreview_node:
 		# Wait for the topic
 		self.image = rospy.wait_for_message("/raspicam_node_robot/image/compressed", CompressedImage)
 
+	# TODO
 	# Overlay some text onto the image display
 	def textInfo(self):
 		cv2.putText(self.cv_image, "Sample", (10, self.image_height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
@@ -84,7 +85,7 @@ class RaspicamPreview_node:
 				self.cv_image_copy = self.cv_image.copy()
 
 				# Overlay some text onto the image display
-				self.textInfo()
+				#self.textInfo()
 
 				# Refresh the image on the screen
 				self.dispImage()
