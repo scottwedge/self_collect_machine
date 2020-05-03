@@ -140,7 +140,7 @@ class StoreBarcodeRecord_node:
 						# Email QR Code
 						email = 'wansnap@gmail.com' # Your email
 						password = 'Kh@irulizwan1984' # Your email account password
-						send_to_emails = ['wansnap@gmail.com', 'shafikahdarwis@gmail.com'] # List of email addresses
+						send_to_emails = [self.qr.data.rsplit(',', 1)[1], 'shafikahdarwis@gmail.com'] # List of email addresses
 						subject = "Order ID " + self.custQR # The subject line
 						message = "Please proceed to our Self Collect Machine, and show the Code" # The message in the email
 						file_location = self.customerQR
