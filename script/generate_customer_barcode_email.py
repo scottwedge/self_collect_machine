@@ -26,25 +26,18 @@ import os
 import rospkg
 import numpy as np
 
-class StoreBarcodeRecord_node:
+class EmailQRCode_node:
 	def __init__(self):
 		# Initializing your ROS Node
-		rospy.init_node('StoreBarcodeRecord_node', anonymous=True)
+		rospy.init_node('EmailQRCode_node', anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
-		# initialize the output directory path and create the output
-		# directory
-		rospy.logwarn("Create an output folder")
-
 		self.rospack = rospkg.RosPack()
-
 		self.p = os.path.sep.join([self.rospack.get_path('self_collect_machine')])
-
 		self.outputDir = os.path.join(self.p, "csv")
-		self.csv_filename = self.outputDir + "/store_barcode" + ".csv"
-		self.csv = open(self.csv_filename, "a")
-		self.found = set()
+
+		self.csv_filename_store = self.outputDir + "/store_barcode" + ".csv"
 
 		# Subscribe to the scanned_barcode topic
 		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)
@@ -79,7 +72,7 @@ class StoreBarcodeRecord_node:
 	# Shutdown
 	def shutdown(self):
 		try:
-			rospy.loginfo("[INFO] StoreBarcodeRecord_node [OFFLINE]...")
+			rospy.loginfo("[INFO] EmailQRCode_node [OFFLINE]...")
 
 		finally:
 			pass
@@ -124,15 +117,15 @@ class StoreBarcodeRecord_node:
 
 
 def main(args):
-	vn = StoreBarcodeRecord_node()
+	vn = EmailQRCode_node()
 
 	try:
 		rospy.spin()
 	except KeyboardInterrupt:
-		rospy.loginfo("[INFO] StoreBarcodeRecord_node [OFFLINE]...")
+		rospy.loginfo("[INFO] EmailQRCode_node [OFFLINE]...")
 
 	cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-	rospy.loginfo("[INFO] StoreBarcodeRecord_node [ONLINE]...")
+	rospy.loginfo("[INFO] EmailQRCode_node [ONLINE]...")
 	main(sys.argv)

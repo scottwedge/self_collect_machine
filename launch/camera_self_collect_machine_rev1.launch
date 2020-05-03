@@ -41,8 +41,8 @@
 	<!-- Store -->
 	<!-- BarCode/QR-Code Record -->
 	<node	pkg="self_collect_machine"
-		type="store_barcode_record_rev1.py"
-		name="barcode_record"
+		type="store_barcode_record_rev2.py"
+		name="store_barcode_record"
 		output="screen">
 	</node>
 

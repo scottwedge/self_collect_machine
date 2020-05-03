@@ -26,6 +26,15 @@ import os
 import rospkg
 import numpy as np
 
+import pyqrcode
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import os.path
+
 class StoreBarcodeRecord_node:
 	def __init__(self):
 		# Initializing your ROS Node
@@ -45,6 +54,10 @@ class StoreBarcodeRecord_node:
 		self.csv_filename = self.outputDir + "/store_barcode" + ".csv"
 		self.csv = open(self.csv_filename, "a")
 		self.found = set()
+
+		self.outputQRDir = os.path.join(self.p, "qr_code")
+
+
 
 		# Subscribe to the scanned_barcode topic
 		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)
@@ -115,6 +128,54 @@ class StoreBarcodeRecord_node:
 						rospy.logwarn("Saved as: {},{},{}\n".format(datetime.datetime.now(), self.qr.data, self.boxID[0]))
 						self.csv.flush()
 						self.found.add(self.qr.data)
+
+						# Generate QR Code
+						self.custQR = self.qr.data.rsplit(',', 1)[0]
+						self.urlcustomer = pyqrcode.create(self.custQR)
+
+						self.customerQR = self.outputQRDir + "/" + self.custQR + ".png"
+
+						self.urlcustomer.png(self.customerQR, scale=8)
+
+						# Email QR Code
+						email = 'wansnap@gmail.com' # Your email
+						password = 'Kh@irulizwan1984' # Your email account password
+						send_to_emails = ['wansnap@gmail.com', 'shafikahdarwis@gmail.com'] # List of email addresses
+						subject = "Order ID " + self.custQR # The subject line
+						message = "Please proceed to our Self Collect Machine, and show the Code" # The message in the email
+						file_location = self.customerQR
+
+						# Create the attachment file (only do it once)
+						filename = os.path.basename(file_location)
+						attachment = open(file_location, "rb")
+						part = MIMEBase('application', 'octet-stream')
+						part.set_payload(attachment.read())
+						encoders.encode_base64(part)
+						part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+
+						# Connect and login to the email server
+						server = smtplib.SMTP('smtp.gmail.com', 587)
+						server.starttls()
+						server.login(email, password)
+
+						# Loop over each email to send to
+						for send_to_email in send_to_emails:
+							# Setup MIMEMultipart for each email address (if we don't do this, the emails will concat on each email sent)
+							msg = MIMEMultipart()
+							msg['From'] = email
+							msg['To'] = send_to_email
+							msg['Subject'] = subject
+
+							# Attach the message to the MIMEMultipart object
+							msg.attach(MIMEText(message, 'plain'))
+							# Attach the attachment file
+							msg.attach(part)
+
+							# Send the email to this specific email address
+							server.sendmail(email, send_to_email, msg.as_string()) 
+
+						# Quit the email server when everything is done
+						server.quit()
 
 					else:
 						rospy.logerr("IN Record!")

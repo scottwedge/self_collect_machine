@@ -1,0 +1,14 @@
+<launch>
+
+	<!-- USB Camera -->
+	<include file="$(find self_collect_machine)/launch/camera_robot.launch"/>
+
+	<!-- Store and Customer -->
+	<!-- BarCode/QR-Code Recognition -->
+	<node	pkg="self_collect_machine"
+		type="camera_barcode_recognition_rev1.py"
+		name="camera_barcode_recognition"
+		output="screen">
+	</node>
+
+</launch>
