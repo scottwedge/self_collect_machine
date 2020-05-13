@@ -7,7 +7,6 @@ the code (BAR/QR)
 **Notes**
 
 StoreQR: OrderID & CustomerEmail
-
 CustQR: OrderID
 
 ### Required Package:
@@ -19,7 +18,7 @@ CustQR: OrderID
 	1. https://github.com/UbiquityRobotics/raspicam_node
 
 3. cv_camera
-> http://wiki.ros.org/cv_camera
+	1. http://wiki.ros.org/cv_camera
 
 ## Scripts
 > USB Camera
