@@ -11,9 +11,9 @@ StoreQR: OrderID & CustomerEmail
 CustQR: OrderID
 
 ### Required Package:
-1.  Python barcode decoding library -- Zbar
-> sudo apt-get install libzbar0
-> pip install pyzbar
+1. Python barcode decoding library -- Zbar
+	1. sudo apt-get install libzbar0
+	2. pip install pyzbar
 
 2. UbiquityRobotics/raspicam_node
 > https://github.com/UbiquityRobotics/raspicam_node
