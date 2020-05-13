@@ -16,7 +16,7 @@ CustQR: OrderID
 	2. pip install pyzbar
 
 2. UbiquityRobotics/raspicam_node
-> https://github.com/UbiquityRobotics/raspicam_node
+	1. https://github.com/UbiquityRobotics/raspicam_node
 
 3. cv_camera
 > http://wiki.ros.org/cv_camera
