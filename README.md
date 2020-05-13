@@ -106,8 +106,8 @@ CustQR: OrderID
 >> BoxID based on the availability. Once binded, the datas will be recorded
 >> under the store_barcode.csv
 
-	1. Microcontroller: 1. sensor reading on the availability of the box; 0 
-is empty and 1 is full (occupied).
+	1. Microcontroller: 
+		1. sensor reading on the availability of the box; 0 is empty and 1 is full (occupied).
 
 5. customer_barcode_record.py
 > rosrun self_collect_machine customer_barcode_record.py
