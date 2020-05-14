@@ -84,11 +84,10 @@ CustQR: OrderID
 
 ## How to troubleshoot the project (need to run by following order)
 ### USB Camera
-1. camera_robot.launch
-> roslaunch self_collect_machine camera_robot.launch
->> This will run the camera -- in ready mode
->> To test either the camera is showing a sequence of images; video run:
-
+#### camera_robot.launch
+1. roslaunch self_collect_machine camera_robot.launch
+> This will run the camera -- in ready mode
+> To test either the camera is showing a sequence of images; video run:
 > rosrun self_collect_machine camera_preview.py
 
 2. camera_barcode_recognition.py
