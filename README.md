@@ -21,8 +21,9 @@ CustQR: OrderID
 	1. http://wiki.ros.org/cv_camera
 
 ## Scripts
-1. USB Camera
-	1. camera_preview.py : Additional useful to test and calibrate a camera
+### Using USB Camera
+1. camera_preview.py
+> Additional useful to test and calibrate a camera
 
 2. camera_barcode_recognition.py
 > Publications: 
@@ -34,12 +35,14 @@ CustQR: OrderID
 > * /cv_camera/image_raw [sensor_msgs/Image]
 > * /scan_status [std_msgs/String]
 
->> 4. camera_barcode_record.py --> simplified version barcode_record.py
+3. camera_barcode_record.py --> simplified version barcode_record.py
 
-> Raspicam
->> 1. raspicam_preview.py
->> 2. raspicam_barcode_recognition.py
->> 3. raspicam_barcode_record.py --> simplified version barcode_record.py
+### Using Raspberry Pi Camera (Raspicam)
+1. raspicam_preview.py
+
+2. raspicam_barcode_recognition.py
+
+3. raspicam_barcode_record.py --> simplified version barcode_record.py
 
 > Barcode
 >> 1. barcode_identification.py
