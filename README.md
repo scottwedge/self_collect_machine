@@ -21,19 +21,18 @@ CustQR: OrderID
 	1. http://wiki.ros.org/cv_camera
 
 ## Scripts
-> USB Camera
->> 1. camera_preview.py
->>> Additional useful to test and calibrate a camera
+1. USB Camera
+	1. camera_preview.py : Additional useful to test and calibrate a camera
 
->> 2. camera_barcode_recognition.py
->>> Publications: 
->>> * /rosout [rosgraph_msgs/Log]
->>> * /scanned_barcode [std_msgs/String]
->>>
->>> Subscriptions: 
->>> * /cv_camera/camera_info [sensor_msgs/CameraInfo]
->>> * /cv_camera/image_raw [sensor_msgs/Image]
->>> * /scan_status [std_msgs/String]
+2. camera_barcode_recognition.py
+> Publications: 
+> * /rosout [rosgraph_msgs/Log]
+> * /scanned_barcode [std_msgs/String]
+>
+> Subscriptions: 
+> * /cv_camera/camera_info [sensor_msgs/CameraInfo]
+> * /cv_camera/image_raw [sensor_msgs/Image]
+> * /scan_status [std_msgs/String]
 
 >> 4. camera_barcode_record.py --> simplified version barcode_record.py
 
