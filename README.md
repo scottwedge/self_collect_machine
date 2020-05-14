@@ -119,9 +119,9 @@ rosrun self_collect_machine customer_barcode_record.py
 > simultaneously checking with the store_barcode.csv to allow the system to 
 > open designated BoxID
 
-**Simplified Version**
-
+## Simplified Version
 roslaunch self_collect_machine camera_self_collect_machine_rev1.launch
+
 **OR**
 
 roslaunch self_collect_machine raspicam_self_collect_machine_rev1.launch
