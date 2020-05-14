@@ -5,20 +5,20 @@ collect thier purchased items during office or after office hours -- by scanning
 the code (BAR/QR)
 
 **Notes**
-
 StoreQR: OrderID & CustomerEmail
+
 CustQR: OrderID
 
 ### Required Package:
-1. Python barcode decoding library -- Zbar
-	1. sudo apt-get install libzbar0
-	2. pip install pyzbar
+#### Python barcode decoding library -- Zbar
+1. sudo apt-get install libzbar0
+2. pip install pyzbar
 
-2. UbiquityRobotics/raspicam_node
-	1. https://github.com/UbiquityRobotics/raspicam_node
+#### UbiquityRobotics/raspicam_node
+1. https://github.com/UbiquityRobotics/raspicam_node
 
-3. cv_camera
-	1. http://wiki.ros.org/cv_camera
+#### cv_camera
+1. http://wiki.ros.org/cv_camera
 
 ## Scripts
 ### Using USB Camera
