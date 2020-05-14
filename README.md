@@ -90,6 +90,8 @@ CustQR: OrderID
 > To test either the camera is showing a sequence of images; video run:
 > rosrun self_collect_machine camera_preview.py
 
+**Updated**
+
 #### camera_barcode_recognition.py
 1. rosrun self_collect_machine camera_barcode_recognition.py
 > This will run the code recognition to recognize a Bar-Code or QR-Code.
