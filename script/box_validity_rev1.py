@@ -36,7 +36,7 @@ class BoxIDValidate_node:
 		self.sensorState2_sub = rospy.Subscriber("/sensorState_2", Int32)
 
 		# Subscribe to the sensorState_3 topic
-		self.sensorState3_sub = rospy.Subscriber("/sensorState_3", Int32)
+#		self.sensorState3_sub = rospy.Subscriber("/sensorState_3", Int32)
 
 		# TODO: may add more
 		# Subscribe to the sensorState_N topic
@@ -55,9 +55,9 @@ class BoxIDValidate_node:
 		# Wait for the topic
 		self.state2 = rospy.wait_for_message("/sensorState_2", String)
 
-	def getSensorState3(self):
-		# Wait for the topic
-		self.state3 = rospy.wait_for_message("/sensorState_3", String)
+#	def getSensorState3(self):
+#		# Wait for the topic
+#		self.state3 = rospy.wait_for_message("/sensorState_3", String)
 
 	# TODO: may add more
 	#def getSensorStateN(self):
@@ -80,10 +80,10 @@ class BoxIDValidate_node:
 			# Get the scan-ed data
 			self.getSensorState1()
 			self.getSensorState2()
-			self.getSensorState3()
+#			self.getSensorState3()
 			# TODO: May add more here
 
-			self.boxState.data = [self.state1.data, self.state2.data, self.state3.data]
+			self.boxState.data = [self.state1.data, self.state2.data]
 			self.boxStatus_pub.publish(self.boxState)
 
 def main(args):

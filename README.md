@@ -92,25 +92,25 @@ CustQR: OrderID
 
 2. camera_barcode_recognition.py
 > rosrun self_collect_machine camera_barcode_recognition.py
->> This will run the code recognition to recognize a Bar-Code or QR-Code.
+> This will run the code recognition to recognize a Bar-Code or QR-Code.
 
 3. barcode_identification.py
 > rosrun self_collect_machine barcode_identification.py
->> This will identify the Machine Mode -- Customer or Store -- with the 
->> smart-tags under the Bar-Code or QR-Code eg: Customer Code only consist of 
->> OrderID only while in Store Code consist of OrderID and CustomerEmail
+> This will identify the Machine Mode -- Customer or Store -- with the 
+> smart-tags under the Bar-Code or QR-Code eg: Customer Code only consist of 
+> OrderID only while in Store Code consist of OrderID and CustomerEmail
 
 4. store_barcode_record.py
 > rosrun self_collect_machine store_barcode_record.py
->> This will record the bind together both OrderID and CustomerEmail with the
->> BoxID based on the availability. Once binded, the datas will be recorded
->> under the store_barcode.csv
+> This will record the bind together both OrderID and CustomerEmail with the
+> BoxID based on the availability. Once binded, the datas will be recorded
+> under the store_barcode.csv
 
 	1. Microcontroller: 
 		1. sensor reading on the availability of the box; 0 is empty and 1 is full (occupied).
 
 5. customer_barcode_record.py
 > rosrun self_collect_machine customer_barcode_record.py
->> This will record each OrderID scanned under the customer_barcode.csv and 
->> simultaneously checking with the store_barcode.csv to allow the system to 
->> open designated BoxID
+> This will record each OrderID scanned under the customer_barcode.csv and 
+> simultaneously checking with the store_barcode.csv to allow the system to 
+> open designated BoxID
