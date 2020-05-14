@@ -44,36 +44,36 @@ CustQR: OrderID
 
 3. raspicam_barcode_record.py --> simplified version barcode_record.py
 
-> Barcode
->> 1. barcode_identification.py
->>> Publications: 
->>>  * /rosout [rosgraph_msgs/Log]
->>>  * /scan_mode [std_msgs/String]
->>> Subscriptions: 
->>>  * /scanned_barcode [std_msgs/String]
+### Barcode
+1. barcode_identification.py
+> Publications: 
+>  * /rosout [rosgraph_msgs/Log]
+>  * /scan_mode [std_msgs/String]
+> Subscriptions: 
+>  * /scanned_barcode [std_msgs/String]
 
->> 2. customer_barcode_record.py
->>> Publications: 
->>>  * /rosout [rosgraph_msgs/Log]
->>>  * /scan_status [std_msgs/String]
->>> Subscriptions: 
->>>  * /scan_mode [std_msgs/String]
->>>  * /scanned_barcode [std_msgs/String]
+2. customer_barcode_record.py
+> Publications: 
+>  * /rosout [rosgraph_msgs/Log]
+>  * /scan_status [std_msgs/String]
+> Subscriptions: 
+>  * /scan_mode [std_msgs/String]
+>  * /scanned_barcode [std_msgs/String]
 
->> 3. store_barcode_record.py
->>> Publications: 
->>>  * /rosout [rosgraph_msgs/Log]
->>>  * /scan_status [std_msgs/String]
->>> Subscriptions: 
->>>  * /scan_mode [std_msgs/String]
->>>  * /scanned_barcode [std_msgs/String]
+3. store_barcode_record.py
+> Publications: 
+>  * /rosout [rosgraph_msgs/Log]
+>  * /scan_status [std_msgs/String]
+> Subscriptions: 
+>  * /scan_mode [std_msgs/String]
+>  * /scanned_barcode [std_msgs/String]
 
->> 4. customer_barcode_validate.py
->>> Publications: 
->>>  * /rosout [rosgraph_msgs/Log]
->>> Subscriptions: 
->>>  * /scan_mode [std_msgs/String]
->>>  * /scanned_barcode [std_msgs/String]
+4. customer_barcode_validate.py
+> Publications: 
+>  * /rosout [rosgraph_msgs/Log]
+> Subscriptions: 
+>  * /scan_mode [std_msgs/String]
+>  * /scanned_barcode [std_msgs/String]
 
 5. barcode_record.py
 6. barcode_validate.py
