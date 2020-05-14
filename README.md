@@ -118,3 +118,4 @@ rosrun self_collect_machine customer_barcode_record.py
 > This will record each OrderID scanned under the customer_barcode.csv and 
 > simultaneously checking with the store_barcode.csv to allow the system to 
 > open designated BoxID
+
