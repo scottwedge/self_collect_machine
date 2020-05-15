@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ################################################################################
-## {Description}: Record the QR/Bar Code on CustomerDatabase
+## {Description}: Record the QR/Bar Code on CustomerDatabase and Sent Email
 ################################################################################
 ## Author: Khairul Izwan Bin Kamsani
 ## Version: {1}.{0}.{0}
@@ -175,6 +175,7 @@ class StoreBarcodeRecord_node:
 							server.sendmail(email, send_to_email, msg.as_string()) 
 
 						# Quit the email server when everything is done
+						rospy.logwarn("Detail has been emailed")
 						server.quit()
 
 					else:

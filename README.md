@@ -80,7 +80,7 @@ CustQR: OrderID
 #### barcode_validate.py
 
 **Updated**
-Some code are updated and name ended with *rev1*
+Some code are updated and name ended with *rev1* or *rev2*
 
 ## Launch
 1. camera_robot.launch
