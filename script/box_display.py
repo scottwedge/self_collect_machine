@@ -47,10 +47,10 @@ class BoxIDDisplay_node:
 
 		self.sensor = data
 
-	def take_picture(self):
+	def update_display(self):
 		if self.sensor:
-			with canvas(self.virtual) as draw:
-				text(draw, (0, 1), "Izwan", fill="white", font=proportional(CP437_FONT))
+			show_message(self.device, 'BoxID:', 
+				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
 		else:
 			show_message(self.device, 'Raspberry Pi MAX7219', 
 				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
@@ -59,11 +59,11 @@ if __name__ == '__main__':
 
 	# Initialize
 	rospy.init_node('BoxIDDisplay_node', anonymous=False)
-	camera = BoxIDDisplay_node()
+	led = BoxIDDisplay_node()
 
 	# Take a photo
 	while not rospy.is_shutdown():
-		camera.take_picture()
+		led.update_display()
 
 	# Sleep to give the last log messages time to be sent
 	rospy.sleep(1)
