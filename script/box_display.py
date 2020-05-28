@@ -34,7 +34,7 @@ class BoxIDDisplay_node:
 		self.device.contrast(5)
 		self.virtual = viewport(self.device, width=32, height=16)
 
-		self.sensor = False
+		#self.sensor = False
 
 		# Connect sensor topic
 		sensor_topic = "/sensor"
