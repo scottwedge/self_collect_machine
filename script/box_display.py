@@ -45,7 +45,7 @@ class BoxIDDisplay_node:
 
 	def callback(self, data):
 
-		self.sensor = data
+		self.sensor = data.data
 
 	def update_display(self):
 #		if self.sensor == True:
