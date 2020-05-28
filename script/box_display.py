@@ -34,6 +34,8 @@ class BoxIDDisplay_node:
 		self.device.contrast(5)
 		self.virtual = viewport(self.device, width=32, height=16)
 
+		self.sensor = False
+
 		# Connect sensor topic
 		sensor_topic = "/sensor"
 		self.sensor_sub = rospy.Subscriber(sensor_topic, Bool, self.callback)
