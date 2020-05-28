@@ -48,13 +48,12 @@ class BoxIDDisplay_node:
 		self.sensor = data.data
 
 	def update_display(self):
-#		if self.sensor == True:
-#			show_message(self.device, 'BoxID:', 
-#				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
-#		else:
-#			show_message(self.device, 'Welcome to AUTOBOTIC Self Collect Machine', 
-#				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
-		rospy.loginfo(self.sensor)
+		if self.sensor == True:
+			show_message(self.device, 'BoxID:', fill="white", 
+				font=proportional(LCD_FONT), scroll_delay=0.08)
+		else:
+			show_message(self.device, 'Welcome to AUTOBOTIC Self Collect Machine', 
+				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
 
 if __name__ == '__main__':
 
