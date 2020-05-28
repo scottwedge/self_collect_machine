@@ -42,7 +42,7 @@ class BarcodeIdentity_node:
 
 		self.getMode()
 
-	# Get scanned barcode
+	# Get Scanned Barcode
 	def getQR(self):
 		# Wait for the topic
 		self.qr = rospy.wait_for_message("/scanned_barcode", String)
@@ -55,6 +55,7 @@ class BarcodeIdentity_node:
 		finally:
 			pass
 
+	# Get the Scanned Mode
 	def getMode(self):
 		# Initiate the topic
 		self.typeQR = String()

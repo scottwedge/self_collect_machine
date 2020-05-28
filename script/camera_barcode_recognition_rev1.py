@@ -62,11 +62,12 @@ class BarcodeRecognition_node:
 		# Wait for the topic
 		#self.status = rospy.wait_for_message("/scan_status", String)
 
+	# Get the ROS Image
 	def getImage(self):
 		# Wait for the topic
 		self.image = rospy.wait_for_message("/cv_camera/image_raw", Image)
 
-	# Get the width and height of the image
+	# Get the Width and Height of the Image
 	def getCameraInfo(self):
 		# Wait for the topic
 		self.camerainfo = rospy.wait_for_message("/cv_camera/camera_info", CameraInfo)
@@ -83,8 +84,10 @@ class BarcodeRecognition_node:
 		# Get the scan-ed data
 		self.getCameraInfo()
 
-		cv2.putText(self.cv_image, "Sample", (10, self.camerainfo.height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
-		cv2.putText(self.cv_image, "(%d, %d)" % (self.camerainfo.width, self.camerainfo.height), (self.camerainfo.width-100, self.camerainfo.height-10), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+		cv2.putText(self.cv_image, "Sample", (10, self.camerainfo.height-10), 
+			cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
+		cv2.putText(self.cv_image, "(%d, %d)" % (self.camerainfo.width, self.camerainfo.height), 				(self.camerainfo.width-100, self.camerainfo.height-10), 
+			cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA, False)
 
 	# Refresh the image on the screen
 	def dispImage(self):
@@ -99,6 +102,7 @@ class BarcodeRecognition_node:
 		finally:
 			cv2.destroyAllWindows()
 
+	# Get the Scanned Barcode
 	def getBarcode(self):
 		while not rospy.is_shutdown():
 			try:
@@ -127,7 +131,8 @@ class BarcodeRecognition_node:
 					# draw the bounding box surrounding the barcode on the 
 					# image
 					(self.x, self.y, self.w, self.h) = self.barcode.rect
-					cv2.rectangle(self.cv_image, (self.x, self.y), (self.x + self.w, self.y + self.h), (0, 0, 255), 2)
+					cv2.rectangle(self.cv_image, (self.x, self.y), 
+						(self.x + self.w, self.y + self.h), (0, 0, 255), 2)
 
 					# the barcode data is a bytes object so if we want to 
 					# draw it on our output image we need to convert it to 
@@ -140,7 +145,8 @@ class BarcodeRecognition_node:
 
 					# TODO: Un-comment for troubleshoot
 					# draw the barcode data and barcode type on the image
-					cv2.putText(self.cv_image, "{} ({})".format(self.barcodeData, self.barcodeType), (self.x, self.y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+					cv2.putText(self.cv_image, "{} ({})".format(self.barcodeData, self.barcodeType), 
+						(self.x, self.y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
 					# Publishing
 					self.scanCode = String()
