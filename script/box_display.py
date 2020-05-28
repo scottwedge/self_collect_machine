@@ -34,7 +34,7 @@ class BoxIDDisplay_node:
 		self.device.contrast(5)
 		self.virtual = viewport(self.device, width=32, height=16)
 
-		#self.sensor = False
+		self.sensor = False
 
 		# Connect sensor topic
 		sensor_topic = "/sensor"
@@ -45,15 +45,16 @@ class BoxIDDisplay_node:
 
 	def callback(self, data):
 
-		self.sensor = data.data
+		self.sensor = data
 
 	def update_display(self):
-		if self.sensor == True:
-			show_message(self.device, 'BoxID:', 
-				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
-		else:
-			show_message(self.device, 'Welcome to AUTOBOTIC Self Collect Machine', 
-				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
+#		if self.sensor == True:
+#			show_message(self.device, 'BoxID:', 
+#				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
+#		else:
+#			show_message(self.device, 'Welcome to AUTOBOTIC Self Collect Machine', 
+#				fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
+		rospy.loginfo(self.sensor)
 
 if __name__ == '__main__':
 
