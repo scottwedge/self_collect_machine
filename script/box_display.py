@@ -8,9 +8,6 @@
 ## Email: {wansnap@gmail.com}
 ################################################################################
 
-from __future__ import print_function
-from __future__ import division
-
 import sys
 import rospy
 
@@ -18,10 +15,6 @@ from std_msgs.msg import String
 from std_msgs.msg import Int32
 from std_msgs.msg import Bool
 from self_collect_machine.msg import boxStatus
-
-import csv
-import datetime
-import cv2
 
 import RPi.GPIO as GPIO
 from time import sleep, strftime
