@@ -33,7 +33,7 @@
 	<!-- Store -->
 	<!-- Box Validity -->
 	<node	pkg="self_collect_machine"
-		type="box_validity_rev1.py"
+		type="box_validity_rev2.py"
 		name="box_validity"
 		output="screen">
 	</node>

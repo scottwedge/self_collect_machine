@@ -108,7 +108,7 @@ class StoreBarcodeRecord_node:
 
 			self.boxID = np.array(self.box.data)
 			# TODO:
-			self.boxID = np.where(self.boxID == 0)[0]
+			self.boxID = np.where(self.boxID == 1)[0]
 
 			#rospy.loginfo(self.scanMode)
 			if self.mode.data == "store":

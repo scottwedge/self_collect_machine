@@ -52,15 +52,15 @@ class BoxIDValidate_node:
 
 	def getSensorState1(self):
 		# Wait for the topic
-		self.state1 = rospy.wait_for_message("/sensorState_1", String)
+		self.state1 = rospy.wait_for_message("/sensorState_1", Int32)
 
 	def getSensorState2(self):
 		# Wait for the topic
-		self.state2 = rospy.wait_for_message("/sensorState_2", String)
+		self.state2 = rospy.wait_for_message("/sensorState_2", Int32)
 
-#	def getSensorState3(self):
-#		# Wait for the topic
-#		self.state3 = rospy.wait_for_message("/sensorState_3", String)
+	def getSensorState3(self):
+		# Wait for the topic
+		self.state3 = rospy.wait_for_message("/sensorState_3", Int32)
 
 	# TODO: may add more
 	#def getSensorStateN(self):
