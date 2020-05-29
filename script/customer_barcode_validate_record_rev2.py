@@ -60,7 +60,7 @@ class CustomerBarcodeRecord_node:
 		self.boxID_activation_pub = rospy.Publisher("/boxID_activation", Int32, queue_size=10)
 
 		# Publish to the boxID_activation topic
-		self.boxDisplay_pub = rospy.Publisher("/boxNumber", Int32, queue_size=10)
+		self.boxDisplay_pub = rospy.Publisher("/boxNumberID", Int32, queue_size=10)
 
 		self.customerRecord()
 

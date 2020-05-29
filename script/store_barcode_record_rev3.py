@@ -110,6 +110,7 @@ class StoreBarcodeRecord_node:
 
 			# TODO:
 			self.boxID = np.where(self.boxID == 1)[0]
+			self.boxDispNo = self.boxID[0]
 
 			#rospy.loginfo(self.scanMode)
 			if self.mode.data == "store":
@@ -123,12 +124,13 @@ class StoreBarcodeRecord_node:
 					# if the barcode text is currently not in our CSV file, write
 					# the timestamp + barcode to disk and update the set
 					if self.qr.data not in self.found:
+
 						# TODO: Publish a data to print on MAX2719
-						self.scanBox.data = self.boxID[0]
+						self.scanBox.data = int(self.boxDispNo)
 						self.scanBox_pub.publish(self.scanBox)
 
 						self.csv.write("{},{},{}\n".format(datetime.datetime.now(), 
-							self.qr.data,, self.boxID[0]))
+							self.qr.data, self.boxID[0]))
 
 						# TODO: Un-comment for troubleshoot
 						rospy.logwarn("Saved as: {},{},{}\n".format(datetime.datetime.now(), 								self.qr.data, self.boxID[0]))

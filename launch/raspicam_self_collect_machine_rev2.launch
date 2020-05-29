@@ -1,13 +1,13 @@
 <launch>
 
 	<!-- USB Camera -->
-	<include file="$(find self_collect_machine)/launch/camera_robot.launch"/>
+	<include file="$(find self_collect_machine)/launch/raspicam_robot.launch"/>
 
 	<!-- Store and Customer -->
 	<!-- BarCode/QR-Code Recognition -->
 	<node	pkg="self_collect_machine"
-		type="camera_barcode_recognition_rev1.py"
-		name="camera_barcode_recognition"
+		type="raspicam_barcode_recognition_rev1.py"
+		name="raspicam_barcode_recognition"
 		output="screen">
 	</node>
 
@@ -21,15 +21,14 @@
 
 	<!-- Store and Customer -->
 	<!-- Box Activation -->
-	<node	pkg="rosserial_python"
-		type="serial_node.py"
-		name="sensor_read_box_activation"
-		output="screen">
+	<!-- <node	pkg="rosserial_python" -->
+	<!-- 	type="serial_node.py" -->
+	<!-- 	name="sensor_read_box_activation" -->
+	<!-- 	output="screen"> -->
 
-		<!-- Always remember to update the Arduino Serial Port -->
-		<param name="port" value="/dev/ttyUSB0" />
-		<param name="baud" value="57600" />
-	</node>
+	<!-- 	<param name="port" value="/dev/ttyUSB0" /> -->
+	<!-- 	<param name="baud" value="57600" /> -->
+	<!-- </node> -->
 
 	<!-- Store -->
 	<!-- Box Validity -->
@@ -54,13 +53,5 @@
 		name="customer_barcode_validate_record"
 		output="screen">
 	</node>
-
-	<!-- MAX2719 -->
-	<!-- Display The Box Number -->
-	<!-- <node	pkg="self_collect_machine" -->
-	<!-- 	type="box_display.py" -->
-	<!-- 	name="box_display" -->
-	<!-- 	output="screen"> -->
-	<!-- </node> -->
 
 </launch>
