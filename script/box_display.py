@@ -37,8 +37,8 @@ class BoxIDDisplay_node:
 		self.sensor = False
 
 		# Connect sensor topic
-		sensor_topic = "/sensor"
-		self.sensor_sub = rospy.Subscriber(sensor_topic, Bool, self.callback)
+		sensor_topic = "/boxNumber"
+		self.sensor_sub = rospy.Subscriber(sensor_topic, Int32, self.callback)
 
 		# Allow up to one second to connection
 		rospy.sleep(1)
@@ -49,7 +49,7 @@ class BoxIDDisplay_node:
 
 	def update_display(self):
 		if self.sensor == True:
-			show_message(self.device, 'BoxID:', fill="white", 
+			show_message(self.device, 'BoxID: {}'.format(self.sensor), fill="white", 
 				font=proportional(LCD_FONT), scroll_delay=0.08)
 		else:
 			show_message(self.device, 'Welcome to AUTOBOTIC Self Collect Machine', 

@@ -17,6 +17,7 @@ import cv2
 import imutils
 
 from std_msgs.msg import String
+from std_msgs.msg import Int32
 from self_collect_machine.msg import boxStatus
 
 from pyzbar import pyzbar
@@ -66,15 +67,8 @@ class StoreBarcodeRecord_node:
 		# Subscribe to the box_available topic
 		self.boxStatus_sub = rospy.Subscriber("/box_available", boxStatus)
 
-		# Subscribe to the box_available topic
-		self.boxDoor_sub = rospy.Subscriber("/box_door", boxStatus)
-
-		# TODO
-		# Publish to the scan_status topic
-		#self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
-
-		# Publish to the box_available topic
-		self.boxDoor_pub = rospy.Publisher("/box_door_status", boxStatus)
+		# Publish to the boxNumber topic
+		self.scanBox_pub = rospy.Publisher("/boxNumber", Int32, queue_size=10)
 
 		self.storeRecord()
 
@@ -93,11 +87,6 @@ class StoreBarcodeRecord_node:
 		# Wait for the topic
 		self.box = rospy.wait_for_message("/box_available", boxStatus)
 
-	# Get scanned barcode
-	def getBoxDoor(self):
-		# Wait for the topic
-		self.boxDoor = rospy.wait_for_message("/box_door", boxStatus)
-
 	# Shutdown
 	def shutdown(self):
 		try:
@@ -109,17 +98,18 @@ class StoreBarcodeRecord_node:
 	def storeRecord(self):
 		# TODO
 		# Initiate the topic
-		#self.scanStatus = String()
+		self.scanBox = Int32
 
 		while not rospy.is_shutdown():
 			# Get the scan-ed data
 			self.getQR()
 			self.getMode()
 			self.getBox()
-			self.getBoxDoor()
 
 			self.boxID = np.array(self.box.data)
-			self.boxID = np.where(self.boxID == 0)[0]
+
+			# TODO:
+			self.boxID = np.where(self.boxID == 1)[0]
 
 			#rospy.loginfo(self.scanMode)
 			if self.mode.data == "store":
@@ -133,11 +123,15 @@ class StoreBarcodeRecord_node:
 					# if the barcode text is currently not in our CSV file, write
 					# the timestamp + barcode to disk and update the set
 					if self.qr.data not in self.found:
-						# TODO: Publish the data for opening the locker door
-						
-						self.csv.write("{},{},{}\n".format(datetime.datetime.now(), self.qr.data, self.boxID[0]))
+						# TODO: Publish a data to print on MAX2719
+						self.scanBox.data = self.boxID[0]
+						self.scanBox_pub.publish(self.scanBox)
+
+						self.csv.write("{},{},{}\n".format(datetime.datetime.now(), 
+							self.qr.data,, self.boxID[0]))
+
 						# TODO: Un-comment for troubleshoot
-						rospy.logwarn("Saved as: {},{},{}\n".format(datetime.datetime.now(), self.qr.data, self.boxID[0]))
+						rospy.logwarn("Saved as: {},{},{}\n".format(datetime.datetime.now(), 								self.qr.data, self.boxID[0]))
 						self.csv.flush()
 						self.found.add(self.qr.data)
 
@@ -195,6 +189,7 @@ class StoreBarcodeRecord_node:
 
 				else:
 					rospy.logerr("No Empty Box Available")
+
 
 def main(args):
 	vn = StoreBarcodeRecord_node()

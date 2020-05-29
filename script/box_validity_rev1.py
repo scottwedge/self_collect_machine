@@ -30,13 +30,16 @@ class BoxIDValidate_node:
 		rospy.on_shutdown(self.shutdown)
 
 		# Subscribe to the sensorState_1 topic
-		self.sensorState1_sub = rospy.Subscriber("/sensorState_1", Int32)
+#		self.sensorState1_sub = rospy.Subscriber("/sensorState_1", Int32)
+		self.sensorState1_sub = rospy.Subscriber("/switchState_1", Int32)
 
 		# Subscribe to the sensorState_2 topic
-		self.sensorState2_sub = rospy.Subscriber("/sensorState_2", Int32)
+#		self.sensorState2_sub = rospy.Subscriber("/sensorState_2", Int32)
+		self.sensorState1_sub = rospy.Subscriber("/switchState_2", Int32)
 
 		# Subscribe to the sensorState_3 topic
 #		self.sensorState3_sub = rospy.Subscriber("/sensorState_3", Int32)
+		self.sensorState3_sub = rospy.Subscriber("/switchState_3", Int32)
 
 		# TODO: may add more
 		# Subscribe to the sensorState_N topic
