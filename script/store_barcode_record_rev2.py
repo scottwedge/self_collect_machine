@@ -113,7 +113,7 @@ class StoreBarcodeRecord_node:
 			#rospy.loginfo(self.scanMode)
 			if self.mode.data == "store":
 				# TODO: Un-comment for troubleshoot
-				#rospy.loginfo(self.qr.data)
+				rospy.loginfo(self.qr.data)
 
 				if len(self.boxID) > 0:
 					# TODO: Un-comment for troubleshoot
