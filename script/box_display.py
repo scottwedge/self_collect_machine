@@ -55,7 +55,7 @@ class BoxIDDisplay_node:
 			show_message(self.device, 'BoxID: {}'.format(self.sensor.data), fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
 
 			with canvas(self.virtual) as draw:
-				text(draw, (1, 1), "{}".format(self.sensor.data), fill="white", font=proportional(CP437_FONT))
+				text(draw, (1, 1), "BoxID: {}".format(self.sensor.data), fill="white", font=proportional(CP437_FONT))
 
 			self.sensor_val = self.sensor.data
 		else:
