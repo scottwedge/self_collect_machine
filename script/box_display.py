@@ -37,7 +37,7 @@ class BoxIDDisplay_node:
 		self.sensor_val = 0
 
 		# Connect sensor topic
-		self.sensor_topic = "/boxNumber"
+		self.sensor_topic = "/boxID_activation"
 #		self.sensor_sub = rospy.Subscriber(self.sensor_topic, Int32, self.callback)
 		self.sensor_sub = rospy.Subscriber(self.sensor_topic, Int32)
 
