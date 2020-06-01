@@ -59,7 +59,7 @@ class BoxIDDisplay_node:
 		else:
 #			show_message(self.device, 'Welcome to AUTOBOTIC Self Collect Machine', 
 #				fill="white", font=proportional(LCD_FONT), scroll_delay=0.05)
-			continue
+			pass
 
 if __name__ == '__main__':
 
