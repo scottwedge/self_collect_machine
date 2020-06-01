@@ -34,24 +34,25 @@ class BoxIDDisplay_node:
 		self.device.contrast(5)
 		self.virtual = viewport(self.device, width=32, height=16)
 
-		self.sensor_val = False
+		self.sensor_val = 0
 
 		# Connect sensor topic
-		sensor_topic = "/boxNumber"
-		self.sensor_sub = rospy.Subscriber(sensor_topic, Int32, self.callback)
+		self.sensor_topic = "/boxNumber"
+#		self.sensor_sub = rospy.Subscriber(self.sensor_topic, Int32, self.callback)
+		self.sensor_sub = rospy.Subscriber(self.sensor_topic, Int32)
 
 		# Allow up to one second to connection
 		rospy.sleep(1)
 
-	def callback(self, data):
-
-		self.sensor = data.data
-
-		self.sensor_val = True
+	def getSensor(self):
+		# Wait for the topic
+		self.sensor = rospy.wait_for_message(self.sensor_topic, Int32)
 
 	def update_display(self):
-		if self.sensor_val == True:
-			show_message(self.device, 'BoxID: {}'.format(self.sensor), fill="white", 
+		self.getSensor()
+
+		if self.sensor.data != self.sensor_val:
+			show_message(self.device, 'BoxID: {}'.format(self.sensor.data), fill="white", 
 				font=proportional(LCD_FONT), scroll_delay=0.08)
 		else:
 			show_message(self.device, 'Welcome to AUTOBOTIC Self Collect Machine', 
