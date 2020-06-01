@@ -52,8 +52,10 @@ class BoxIDDisplay_node:
 		self.getSensor()
 
 		if self.sensor.data != self.sensor_val:
-			show_message(self.device, 'BoxID: {}'.format(self.sensor.data), fill="white", 
-				font=proportional(LCD_FONT), scroll_delay=0.08)
+			show_message(self.device, 'BoxID: {}'.format(self.sensor.data), fill="white", font=proportional(LCD_FONT), scroll_delay=0.08)
+
+			with canvas(self.virtual) as draw:
+				text(draw, (1, 1), "{}".format(self.sensor.data), fill="white", font=proportional(CP437_FONT))
 
 			self.sensor_val = self.sensor.data
 		else:
