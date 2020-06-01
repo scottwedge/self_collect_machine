@@ -54,4 +54,12 @@
 		output="screen">
 	</node>
 
+	<!-- MAX7219 -->
+	<!-- BoxID Display -->
+	<node	pkg="self_collect_machine"
+		type="box_display.py"
+		name="box_display"
+		output="screen">
+	</node>
+
 </launch>
