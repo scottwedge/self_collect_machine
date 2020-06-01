@@ -34,7 +34,7 @@ class BoxIDDisplay_node:
 		self.device.contrast(5)
 		self.virtual = viewport(self.device, width=32, height=16)
 
-		self.sensor = False
+		self.sensor_val = False
 
 		# Connect sensor topic
 		sensor_topic = "/boxNumber"
@@ -47,8 +47,10 @@ class BoxIDDisplay_node:
 
 		self.sensor = data.data
 
+		self.sensor_val = True
+
 	def update_display(self):
-		if self.sensor == True:
+		if self.sensor_val == True:
 			show_message(self.device, 'BoxID: {}'.format(self.sensor), fill="white", 
 				font=proportional(LCD_FONT), scroll_delay=0.08)
 		else:
