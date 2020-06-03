@@ -39,6 +39,7 @@ class StoreBarcodeRecord_node:
 	def __init__(self):
 
 		self.rospack = rospkg.RosPack()
+		self.scanStatus = String()
 
 		# Initializing your ROS Node
 		rospy.init_node('store_barcode_record', anonymous=False)
@@ -56,67 +57,45 @@ class StoreBarcodeRecord_node:
 
 		self.outputQRDir = os.path.join(self.p, "qr_code")
 
-		# Subscribe to the scanned_barcode topic
+		# Subscribe String msg
 		self.scannedBar_sub = rospy.Subscriber("/scanned_barcode", String)
 
-		# Subscribe to the scan_mode topic
+		# Subscribe String msg
 		self.scanMode_sub = rospy.Subscriber("/scan_mode", String)
 
-		# Subscribe to the box_available topic
+		# Subscribe boxStatus msg
 		self.boxStatus_sub = rospy.Subscriber("/box_available", boxStatus)
 
 		# TODO
-		# Publish to the scan_status topic
-		#self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
+		# Publish String msg
+		self.scanStatus_pub = rospy.Publisher("/scan_status", String, queue_size=10)
 
 		self.storeRecord()
 
-	# Get scanned barcode
 	def getQR(self):
-		# Wait for the topic
+
 		self.qr = rospy.wait_for_message("/scanned_barcode", String)
 
-	# Get scanned barcode
 	def getMode(self):
-		# Wait for the topic
+
 		self.mode = rospy.wait_for_message("/scan_mode", String)
 
-	# Get scanned barcode
 	def getBox(self):
-		# Wait for the topic
+
 		self.box = rospy.wait_for_message("/box_available", boxStatus)
 
-	# Shutdown
-	def shutdown(self):
-		try:
-			rospy.loginfo("[INFO] StoreBarcodeRecord_node [OFFLINE]...")
-
-		finally:
-			pass
-
 	def storeRecord(self):
-		# TODO
-		# Initiate the topic
-		#self.scanStatus = String()
 
 		while not rospy.is_shutdown():
-			# Get the scan-ed data
 			self.getQR()
 			self.getMode()
 			self.getBox()
 
 			self.boxID = np.array(self.box.data)
-			# TODO:
 			self.boxID = np.where(self.boxID == 1)[0]
 
-			#rospy.loginfo(self.scanMode)
 			if self.mode.data == "store":
-				# TODO: Un-comment for troubleshoot
-				rospy.loginfo(self.qr.data)
-
 				if len(self.boxID) > 0:
-					# TODO: Un-comment for troubleshoot
-					#rospy.logwarn("Empty Box Available")
 
 					# if the barcode text is currently not in our CSV file, write
 					# the timestamp + barcode to disk and update the set
@@ -179,21 +158,20 @@ class StoreBarcodeRecord_node:
 						server.quit()
 
 					else:
-						rospy.logerr("IN Record!")
+						self.scanStatus = "Scanned!"
+						self.scanStatus_pub.publish(self.scanStatus)
 
 				else:
-					rospy.logerr("No Empty Box Available")
-
+					self.scanStatus = "No Empty Box Available"
+					self.scanStatus_pub.publish(self.scanStatus)
 
 def main(args):
 	vn = StoreBarcodeRecord_node()
 
 	try:
 		rospy.spin()
-	except KeyboardInterrupt:
-		rospy.loginfo("[INFO] StoreBarcodeRecord_node [OFFLINE]...")
-
-	cv2.destroyAllWindows()
+	except KeyboardInterrupt as e:
+		print(e)
 
 if __name__ == '__main__':
 	main(sys.argv)

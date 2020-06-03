@@ -83,7 +83,7 @@ class BoxIDValidate_node:
 			# Get the scan-ed data
 			self.getSensorState1()
 			self.getSensorState2()
-#			self.getSensorState3()
+			self.getSensorState3()
 			# TODO: May add more here
 
 			self.boxState.data = [self.state1.data, self.state2.data]

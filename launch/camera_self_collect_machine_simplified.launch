@@ -1,0 +1,51 @@
+<launch>
+
+	<!-- USB Camera -->
+	<include file="$(find self_collect_machine)/launch/camera_robot.launch"/>
+
+	<!-- Store and Customer -->
+	<!-- BarCode/QR-Code Recognition -->
+	<node	pkg="self_collect_machine"
+		type="camera_barcode_recognition_simplified.py"
+		name="camera_barcode_recognition">
+	</node>
+
+	<!-- Store and Customer -->
+	<!-- BarCode/QR-Code Identification -->
+	<node	pkg="self_collect_machine"
+		type="barcode_identification_simplified.py"
+		name="barcode_identification">
+	</node>
+
+	<!-- Store and Customer -->
+	<!-- Box Activation -->
+	<node	pkg="rosserial_python"
+		type="serial_node.py"
+		name="sensor_read_box_activation">
+
+	<!-- Always remember to update the Arduino Serial Port -->
+		<param name="port" value="/dev/ttyUSB0"/>
+		<param name="baud" value="57600"/>
+	</node>
+
+	<!-- Store -->
+	<!-- Box Validity -->
+	<node	pkg="self_collect_machine"
+		type="box_validity_simplified.py"
+		name="box_validity">
+	</node>
+
+	<!-- Store -->
+	<!-- BarCode/QR-Code Record -->
+	<node	pkg="self_collect_machine"
+		type="store_barcode_record_simplified.py"
+		name="store_barcode_record">
+	</node>
+
+	<!-- Customer -->
+	<!-- BarCode/QR-Code Record -->
+	<node	pkg="self_collect_machine"
+		type="customer_barcode_validate_record_simplified.py"
+		name="customer_barcode_validate_record">
+	</node>
+</launch>
