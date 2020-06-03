@@ -109,7 +109,7 @@ class BarcodeRecognition_node:
 			cv2.waitKey(1)
 
 		else:
-			rospy.logerr("No images recieved")
+			rospy.logerr("No images received")
 
 	# Get the Scanned Barcode
 	def getBarcode(self):
